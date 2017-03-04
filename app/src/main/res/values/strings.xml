@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Resight-Android</string>
+    <string name="rationale_location">블루투스가 제대로 동작하기 위해선 위치권한이 필요합니다.</string>
+    <string name="rationale_ask_again">이 어플리케이션은 위치권한 없이는 제대로 동작하지 않습니다. 앱 설정에서 위치권한 설정을 해주십시오</string>
+    <string name="title_settings_dialog">권한 요청 필요</string>
+
+</resources>
