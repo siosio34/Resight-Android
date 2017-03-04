@@ -15,18 +15,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Set;
-import java.util.UUID;
 
 public class BloothSearchActivity extends AppCompatActivity {
 
     private static final String TAG = "BloothSearchActivity";
-    static final int ACTION_ENABLE_BT = 8002;
-
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
-
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    //private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     // 스마트폰끼리 블루투스 프로토콜 http://dsnight.tistory.com/13
+    public static final String EXTRA_DEVICE_ADDRESS = "device_address";
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                    if (device.getName().contains("RESIGHT")) {
+                        sendBloothDeviceAddress(device);
+                    }
+                }
+
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) { // 검색이 끝났을때!
+
+                // TODO: 2017. 3. 5. 끝내야하나. 재시도해야하나 결정.
+                Toast.makeText(getApplicationContext(), "RESIGHT 기기가 존재하지않습니다.", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
     private BluetoothAdapter bluetoothAdapter;
 
     @Override
@@ -39,16 +56,10 @@ public class BloothSearchActivity extends AppCompatActivity {
 
         // 먼저 페어링된 기기에서 리사이트를 찾음.
         BluetoothDevice resightDevice = getRESightBloothDeviceFromBondedList();
-
         if (resightDevice != null) { // 페어링된 기기와 바로 연결.
             sendBloothDeviceAddress(resightDevice);
-        }
-        else {
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            this.registerReceiver(mReceiver, filter);
-
-            filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-            this.registerReceiver(mReceiver, filter);
+        } else {
+            startBloothScanRecevier();
         }
     }
 
@@ -65,17 +76,17 @@ public class BloothSearchActivity extends AppCompatActivity {
 
     private void initBlooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(bluetoothAdapter == null) {
+        if (bluetoothAdapter == null) {
             Toast.makeText(this, "이 기종은 블루투스를 지원하지 않아 Resight와 사용할 수 없습니다.", Toast.LENGTH_LONG).show();
             finish();
         }
     }
 
     private void requestOnBlooth() {
-        if(!bluetoothAdapter.isEnabled()){
+        if (!bluetoothAdapter.isEnabled()) {
             bluetoothAdapter.enable(); // 블루투스 바로 연결.
         } else {
-            Log.d(TAG,"already on Blooth");
+            Log.d(TAG, "already on Blooth");
         }
     }
 
@@ -87,7 +98,7 @@ public class BloothSearchActivity extends AppCompatActivity {
 
         BluetoothDevice resightDevice;
 
-        if(pairingDeviceSize > 0) {
+        if (pairingDeviceSize > 0) {
             resightDevice = getResightDeviceFromDeviceList(bondedDevices);
             if (resightDevice != null)
                 return resightDevice;
@@ -98,8 +109,8 @@ public class BloothSearchActivity extends AppCompatActivity {
     private BluetoothDevice getResightDeviceFromDeviceList(Set<BluetoothDevice> bondedDevices) {
 
         BluetoothDevice selectedDevice = null;
-        for(BluetoothDevice device : bondedDevices) {
-            if(device.getName().contains("RESIGHT")) {
+        for (BluetoothDevice device : bondedDevices) {
+            if (device.getName().contains("RESIGHT")) {
                 selectedDevice = device;
                 break;
             }
@@ -109,10 +120,10 @@ public class BloothSearchActivity extends AppCompatActivity {
 
     private void sendBloothDeviceAddress(BluetoothDevice resightDevice) {
 
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        TextView textView = (TextView)findViewById(R.id.textView);
+        TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText("Resight 기기인식을 완료하였습니다.");
 
         // TODO: 2017. 3. 5. 블루투스 연결 완료 됬다는거랑 프로그레스바 텍스트뷰 업데이트.
@@ -125,25 +136,19 @@ public class BloothSearchActivity extends AppCompatActivity {
         finish();
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+    private void startBloothScanRecevier() {
 
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(mReceiver, filter);
 
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    if(device.getName().contains("RESIGHT")) {
-                        sendBloothDeviceAddress(device);
-                    }
-                }
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        this.registerReceiver(mReceiver, filter);
 
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                // 검색이 끝났을때!
-                // TODO: 2017. 3. 5. 끝내야하나. 재시도해야하나 결정. 
-                Toast.makeText(getApplicationContext(),"RESIGHT 기기가 존재하지않습니다.",Toast.LENGTH_LONG).show();
-            }
+        if (bluetoothAdapter.isDiscovering()) {
+            bluetoothAdapter.cancelDiscovery();
         }
-    };
+
+        bluetoothAdapter.startDiscovery();
+
+    }
 }
