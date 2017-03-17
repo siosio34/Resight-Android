@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.dragon4.owo.resight_android.Activity.RESightMainActivity;
+
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         requestBloothPermission();
     }
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void moveSearchBloothActivity() {
-        Intent intent = new Intent(getApplicationContext(),BloothSearchActivity.class);
+        Intent intent = new Intent(getApplicationContext(),RESightMainActivity.class);
         startActivity(intent);
     }
 

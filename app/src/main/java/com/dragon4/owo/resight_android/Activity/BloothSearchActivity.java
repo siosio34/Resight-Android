@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android;
+package com.dragon4.owo.resight_android.Activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,10 +9,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dragon4.owo.resight_android.R;
 
 import java.util.Set;
 
@@ -22,6 +21,8 @@ public class BloothSearchActivity extends AppCompatActivity {
     //private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     // 스마트폰끼리 블루투스 프로토콜 http://dsnight.tistory.com/13
     public static final String EXTRA_DEVICE_ADDRESS = "device_address";
+
+
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -44,6 +45,7 @@ public class BloothSearchActivity extends AppCompatActivity {
             }
         }
     };
+
     private BluetoothAdapter bluetoothAdapter;
 
     @Override
@@ -51,16 +53,16 @@ public class BloothSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blooth_search);
 
-        initBlooth();
-        requestOnBlooth();
-
-        // 먼저 페어링된 기기에서 리사이트를 찾음.
-        BluetoothDevice resightDevice = getRESightBloothDeviceFromBondedList();
-        if (resightDevice != null) { // 페어링된 기기와 바로 연결.
-            sendBloothDeviceAddress(resightDevice);
-        } else {
-            startBloothScanRecevier();
-        }
+        //initBlooth();
+        //requestOnBlooth();
+//
+        //// 먼저 페어링된 기기에서 리사이트를 찾음.
+        //BluetoothDevice resightDevice = getRESightBloothDeviceFromBondedList();
+        //if (resightDevice != null) { // 페어링된 기기와 바로 연결.
+        //    sendBloothDeviceAddress(resightDevice);
+        //} else {
+        //    startBloothScanRecevier();
+        //}
     }
 
     @Override
@@ -120,11 +122,6 @@ public class BloothSearchActivity extends AppCompatActivity {
 
     private void sendBloothDeviceAddress(BluetoothDevice resightDevice) {
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText("Resight 기기인식을 완료하였습니다.");
 
         // TODO: 2017. 3. 5. 블루투스 연결 완료 됬다는거랑 프로그레스바 텍스트뷰 업데이트.
         // 1초뒤 이동
