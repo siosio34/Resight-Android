@@ -1,30 +1,56 @@
 package com.dragon4.owo.resight_android.Activity;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.dragon4.owo.resight_android.Blooth.BluetoothCommunication;
 import com.dragon4.owo.resight_android.R;
 
 public class RESightMainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener{
 
 
+    private static final int REQUEST_CONNECT_DEVICE = 8009;
+
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
+
+    public static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "device_name";
+    private static final String TAG = "RESightMainActivity";
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     int lastSelectedPosition = 0;
     BottomNavigationBar bottomNavigationBar;
+
+    private String mConnectedDeviceName = null;
+    private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothCommunication mChatService = null;
+    private StringBuffer mOutStringBuffer;
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -54,9 +80,61 @@ public class RESightMainActivity extends AppCompatActivity implements BottomNavi
                 .setFirstSelectedPosition(lastSelectedPosition > 3 ? 3 : lastSelectedPosition)
                 .initialise();
 
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        mChatService = new BluetoothCommunication(this, mHandler);
+        mOutStringBuffer = new StringBuffer("");
+
     }
 
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(TAG,String.valueOf(msg.what));
+            switch (msg.what) {
 
+                case MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothCommunication.STATE_CONNECTED:
+                            break;
+                        case BluetoothCommunication.STATE_CONNECTING:
+                            break;
+                        case BluetoothCommunication.STATE_LISTEN:
+                        case BluetoothCommunication.STATE_NONE:
+                            break;
+                    }
+                    break;
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    break;
+                case MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    Toast.makeText(getApplicationContext(), "Connected to "
+                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                case MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,21 +144,37 @@ public class RESightMainActivity extends AppCompatActivity implements BottomNavi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
         int id = item.getItemId();
 
         if (id == R.id.action_blooth) {
-            Intent bloothMoveIntent = new Intent(RESightMainActivity.this, BloothSearchActivity.class);
-            startActivity(bloothMoveIntent);
+            Intent bloothMoveIntent = new Intent(RESightMainActivity.this, BluetoothSearchActivity.class);
+            startActivityForResult(bloothMoveIntent, REQUEST_CONNECT_DEVICE);
             return true;
         } else if(id == R.id.action_settings) {
             return true; //
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothCommunication.STATE_CONNECTED) {
+            Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            mChatService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            //     mOutEditText.setText(mOutStringBuffer);
+        }
     }
 
 
@@ -175,4 +269,27 @@ public class RESightMainActivity extends AppCompatActivity implements BottomNavi
     public void onTabReselected(int position) {
 
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult " + resultCode);
+
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE:
+                if(resultCode == Activity.RESULT_OK) {
+                    connectDevice(data,false);
+                }
+        }
+    }
+
+    private void connectDevice(Intent data, boolean secure) {
+
+        String address = data.getExtras()
+                .getString(BluetoothSearchActivity.EXTRA_DEVICE_ADDRESS);
+
+        Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
+
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        mChatService.connect(device, secure);
+    }
+
 }

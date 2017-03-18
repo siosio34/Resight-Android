@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.BloothSearchActivity"
+        <activity android:name=".Activity.BluetoothSearchActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Activity.RESightMainActivity"
