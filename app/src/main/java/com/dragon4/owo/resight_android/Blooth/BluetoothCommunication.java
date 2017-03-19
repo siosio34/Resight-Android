@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.Activity.RESightMainActivity;
+import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class BluetoothCommunication {
 
-    RESightMainActivity _context;
+    ReSightMainActivity _context;
 
     // Debugging
     private static final String TAG = "BluetoothCommunication";
@@ -69,7 +69,7 @@ public class BluetoothCommunication {
      * @param handler  A Handler to send messages back to the UI Activity
      */
     public BluetoothCommunication(Context context, Handler handler) {
-        this._context = (RESightMainActivity) context;
+        this._context = (ReSightMainActivity) context;
 
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
@@ -85,7 +85,7 @@ public class BluetoothCommunication {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(RESightMainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(ReSightMainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -171,9 +171,9 @@ public class BluetoothCommunication {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(RESightMainActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(RESightMainActivity.DEVICE_NAME, device.getName());
+        bundle.putString(ReSightMainActivity.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -230,9 +230,9 @@ public class BluetoothCommunication {
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(RESightMainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(RESightMainActivity.TOAST, "Unable to connect device");
+        bundle.putString(ReSightMainActivity.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -245,9 +245,9 @@ public class BluetoothCommunication {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(RESightMainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(RESightMainActivity.TOAST, "Device connection was lost");
+        bundle.putString(ReSightMainActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -462,7 +462,7 @@ public class BluetoothCommunication {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(RESightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(ReSightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 
                     /* parsing */
                     // FFFF
@@ -533,7 +533,7 @@ public class BluetoothCommunication {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(RESightMainActivity.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(ReSightMainActivity.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);

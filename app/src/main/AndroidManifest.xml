@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name=".TypeKitSetting"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +24,7 @@
         <activity android:name=".Activity.BluetoothSearchActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".Activity.RESightMainActivity"
+            android:name=".Activity.ReSightMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
     </application>

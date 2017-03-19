@@ -1,19 +1,21 @@
 package com.dragon4.owo.resight_android;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.Activity.RESightMainActivity;
+import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
 
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
@@ -21,12 +23,16 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private static final int RC_LOCATION_REQUEST_PERM = 8001;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestBloothPermission();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void moveSearchBloothActivity() {
-        Intent intent = new Intent(getApplicationContext(),RESightMainActivity.class);
+        Intent intent = new Intent(getApplicationContext(),ReSightMainActivity.class);
         startActivity(intent);
     }
 

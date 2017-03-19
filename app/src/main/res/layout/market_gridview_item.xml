@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_height="152dp"
+    android:fitsSystemWindows="true"
+    android:id="@+id/market_category_item"
+    android:background="#FFFFFF">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:id="@+id/market_item_imageView"
+        app:layout_constraintTop_toBottomOf="@+id/market_category_item"
+        app:layout_constraintLeft_toLeftOf="@+id/market_category_item"
+        app:layout_constraintRight_toRightOf="@+id/market_category_item"
+        />
+
+    <View
+        android:id="@+id/market_item_border"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#f2f2f2"
+        app:layout_constraintTop_toBottomOf="@+id/market_item_imageView"
+        app:layout_constraintLeft_toLeftOf="@+id/market_category_item"
+        app:layout_constraintRight_toRightOf="@+id/market_category_item"
+        android:layout_marginTop="0dp"
+        >
+
+    </View>
+
+
+    <TextView
+        android:id="@+id/market_item_textView"
+        app:layout_constraintTop_toBottomOf="@+id/market_item_border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="테스트"
+        />
+
+</android.support.constraint.ConstraintLayout>
