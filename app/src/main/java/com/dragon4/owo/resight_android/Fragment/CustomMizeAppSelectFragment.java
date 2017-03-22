@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,42 +20,53 @@ import com.dragon4.owo.resight_android.R;
 import java.util.List;
 
 /**
- * Created by joyeongje on 2017. 3. 19..
+ * Created by joyeongje on 2017. 3. 22..
  */
 
-public class MarketFragment extends Fragment {
+public class CustomMizeAppSelectFragment extends Fragment {
 
-    private GridView marketAppGridView;
+    private GridView customAppGridView;
     private List<ResolveInfo> appsInfo;
     private PackageManager packageManager;
-    private Context marketContext;
+    private Context customContext;
 
+    public static Fragment newInstance() {
+        return new CustomMizeAppSelectFragment();
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        marketContext = context;
+        customContext = context;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
 
-        ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_market,container,false);
-       // marketAppGridView = (GridView) rootView.findViewById(R.id.market_grideview);
-      //  marketAppGridView.setAdapter(new MarketGridViewAdpater());
+        getApplicaitonList();
+
+        ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_customize_app_select,container,false);
+        customAppGridView = (GridView) rootView.findViewById(R.id.custom_grideview);
+        customAppGridView.setAdapter(new CustomGridViewAdpater());
 
         return rootView;
     }
 
+    private void getApplicaitonList() {
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        packageManager = customContext.getPackageManager();
+        appsInfo = packageManager.queryIntentActivities(intent,0);
+    }
 
 
-    private class MarketGridViewAdpater extends BaseAdapter {
+    private class CustomGridViewAdpater extends BaseAdapter {
         LayoutInflater inflater;
 
-        private MarketGridViewAdpater() {
-            inflater = (LayoutInflater) marketContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        private CustomGridViewAdpater() {
+            inflater = (LayoutInflater) customContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         @Override
         public int getCount() {
@@ -76,24 +86,25 @@ public class MarketFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.market_gridview_item, parent, false);
+                convertView = inflater.inflate(R.layout.customize_gridview_item, parent, false);
             }
             final ResolveInfo info = appsInfo.get(position);
-            ImageView appImageView = (ImageView) convertView.findViewById(R.id.market_item_imageView);
+            ImageView appImageView = (ImageView) convertView.findViewById(R.id.custom_category_item_imageView);
             appImageView.setBackground(info.activityInfo.loadIcon(packageManager));
             appImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_RUN);
                     intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));
-                    marketContext.startActivity(intent);
+                    customContext.startActivity(intent);
                 }
             });
-            TextView appTextView = (TextView) convertView.findViewById(R.id.market_item_textView);
+            TextView appTextView = (TextView) convertView.findViewById(R.id.custom_category_item_textView);
             appTextView.setText(info.activityInfo.loadLabel(packageManager));
             return convertView;
         }
     }
+
 
 
 }

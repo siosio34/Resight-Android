@@ -5,14 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,16 +44,6 @@ public class HandMotionFragment extends Fragment {
         initializeHandMotion();
         handMotionGridView = (GridView) rootView.findViewById(R.id.hand_motion_gridView);
         handMotionGridView.setAdapter(new HandMotionGridViewAdpater());
-
-        Button fab = (Button) rootView.findViewById(R.id.fab_hand);
-        fab.bringToFront();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         return rootView;
     }

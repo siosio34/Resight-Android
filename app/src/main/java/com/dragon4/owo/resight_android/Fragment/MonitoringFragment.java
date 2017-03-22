@@ -26,4 +26,9 @@ public class MonitoringFragment extends Fragment {
         return rootView;
     }
 
+
+
+
+
+
 }
