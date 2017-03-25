@@ -30,10 +30,6 @@ public class CustomMizeAppSelectFragment extends Fragment {
     private PackageManager packageManager;
     private Context customContext;
 
-    public static Fragment newInstance() {
-        return new CustomMizeAppSelectFragment();
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

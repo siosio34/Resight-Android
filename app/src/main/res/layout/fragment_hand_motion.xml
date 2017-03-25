@@ -7,6 +7,8 @@
     android:id="@+id/hand_motion_fragment_layout"
     android:background="#F2F2F2">
 
+
+
     <GridView
         android:id="@+id/hand_motion_gridView"
         android:layout_width="0dp"

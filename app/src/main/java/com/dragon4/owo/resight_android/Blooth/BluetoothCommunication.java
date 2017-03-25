@@ -170,6 +170,8 @@ public class BluetoothCommunication {
         mConnectedThread = new ConnectedThread(socket, socketType);
         mConnectedThread.start();
 
+
+
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
@@ -341,7 +343,6 @@ public class BluetoothCommunication {
 
 
 
-
     /**
      * This thread runs while attempting to make an outgoing connection
      * with a device. It runs straight through; the connection either
@@ -459,7 +460,9 @@ public class BluetoothCommunication {
             while (true) {
                 try {
                     // Read from the InputStream
+                    Log.d("기기에서 오는데이터", "여긴 들어가냐");
                     bytes = mmInStream.read(buffer);
+                    Log.d("기기에서 오는데이터", String.valueOf(bytes));
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(ReSightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
@@ -472,8 +475,6 @@ public class BluetoothCommunication {
 
 
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-
-
                     byte id;
                     for(int i=0; i<bytes ; i++){
                         //if((Integer.toString(((byte)buffer[i] & 0xff)+0x100,16).substring(1)) == "aa"){
@@ -531,10 +532,12 @@ public class BluetoothCommunication {
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
+               // Log.d("데이터쓴다", String.valueOf(buffer));
 
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(ReSightMainActivity.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
+
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }

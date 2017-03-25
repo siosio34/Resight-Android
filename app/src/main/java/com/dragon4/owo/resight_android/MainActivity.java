@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void moveSearchBloothActivity() {
         Intent intent = new Intent(getApplicationContext(),ReSightMainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

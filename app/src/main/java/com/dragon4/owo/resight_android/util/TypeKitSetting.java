@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android;
+package com.dragon4.owo.resight_android.util;
 
 import android.app.Application;
 

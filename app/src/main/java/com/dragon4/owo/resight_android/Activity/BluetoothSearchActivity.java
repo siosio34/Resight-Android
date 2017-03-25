@@ -36,10 +36,10 @@ public class BluetoothSearchActivity extends AppCompatActivity {
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bloothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (bloothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
+            //    if (bloothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mNewDevicesArrayAdapter.addBloothDeviceToList(bloothDevice);
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
-                }
+              //  }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) { // 검색이 끝났을때!
 
@@ -61,7 +61,6 @@ public class BluetoothSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blooth_search);
-
 
         initBlooth();
         registCheckBloothButton();

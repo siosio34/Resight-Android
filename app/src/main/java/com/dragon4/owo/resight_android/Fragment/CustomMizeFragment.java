@@ -25,13 +25,13 @@ public class CustomMizeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("test", "OncreateView 호출됨");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_customize,container,false);
-        registerFloatingButton();
+        registerFloatingButton(rootView);
         return rootView;
     }
 
-    private void registerFloatingButton() {
+    private void registerFloatingButton(ViewGroup rootView) {
         FloatingActionButton customFloatingButton;
-        customFloatingButton = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        customFloatingButton = (FloatingActionButton)rootView.findViewById(R.id.custom_add_button);
         customFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

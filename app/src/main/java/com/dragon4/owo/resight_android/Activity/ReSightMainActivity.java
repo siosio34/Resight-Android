@@ -36,6 +36,11 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 
+    public static final byte Golfit_Left_ID = 0x03;  // left
+    public static final byte Acc_Data = 0x13;
+    public static final byte Walk_step_Data = 0x12;
+
+
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
     private static final String TAG = "ReSightMainActivity";
@@ -110,48 +115,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         getSupportFragmentManager().beginTransaction().replace(R.id.container,monitoringFragment).commit();
     }
 
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Log.d(TAG,String.valueOf(msg.what));
-            switch (msg.what) {
-
-                case MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothCommunication.STATE_CONNECTED:
-                            break;
-                        case BluetoothCommunication.STATE_CONNECTING:
-                            break;
-                        case BluetoothCommunication.STATE_LISTEN:
-                        case BluetoothCommunication.STATE_NONE:
-                            break;
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_resight_main, menu);
@@ -174,6 +137,51 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         return super.onOptionsItemSelected(item);
     }
 
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(TAG,String.valueOf(msg.what));
+            switch (msg.what) {
+
+                case MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothCommunication.STATE_CONNECTED:
+                            break;
+                        case BluetoothCommunication.STATE_CONNECTING:
+                            break;
+                        case BluetoothCommunication.STATE_LISTEN:
+                        case BluetoothCommunication.STATE_NONE:
+                            break;
+                    }
+                    break;
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    Log.d(TAG,writeMessage);
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    Log.d(TAG,readMessage);
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    break;
+                case MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    Log.d(TAG,mConnectedDeviceName);
+                    Toast.makeText(getApplicationContext(), "Connected to "
+                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                case MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothCommunication.STATE_CONNECTED) {
@@ -186,12 +194,32 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
             mChatService.write(send);
+            Log.d("여기에들어옴","test");
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
             //     mOutEditText.setText(mOutStringBuffer);
         }
     }
+
+    private void sendMessage2(byte[] message) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothCommunication.STATE_CONNECTED) {
+            Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            mChatService.write(message);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            //     mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+
 
     // Bottom Navigation Activity
 
@@ -202,6 +230,16 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         switch (position) {
             case 0:
                 currentSelectedFragment = monitoringFragment;
+                byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x10, (byte)0xFE, (byte)0xFE};
+                sendMessage2(buff);
+                byte[] buff2 = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x11, (byte)0xFE, (byte)0xFE};
+                sendMessage2(buff2);
+                byte[] buff3 = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x12, (byte)0xFE, (byte)0xFE};
+                sendMessage2(buff3);
+                byte[] buff4 = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x13, (byte)0xFE, (byte)0xFE};
+                sendMessage2(buff4);
+
+               //sendMessage("1");
                 break;
             case 1:
                 currentSelectedFragment = handMotionFragment;
@@ -232,7 +270,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE:
                 if(resultCode == Activity.RESULT_OK) {
-                    connectDevice(data,false);
+                    connectDevice(data,true);
                 }
         }
     }
@@ -246,6 +284,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         mChatService.connect(device, secure);
+
     }
 
 }
