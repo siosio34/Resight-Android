@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".util.TypeKitSetting"
@@ -19,17 +19,30 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.BluetoothSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Activity.BluetoothSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ReSightMainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
 
+
+        <service
+            android:name=".service.OnTopActivityService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".Activity.CustomizeDialogActivity"
+            android:theme="@android:style/Theme.Translucent"
+
+
+           />
     </application>
 
 </manifest>

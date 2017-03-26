@@ -25,6 +25,8 @@ public class BluetoothCommunication {
 
     ReSightMainActivity _context;
 
+    public static int sensorsData[] = new int[6];
+
     // Debugging
     private static final String TAG = "BluetoothCommunication";
     private static final boolean D = true;
@@ -47,6 +49,8 @@ public class BluetoothCommunication {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
+
+    private static BluetoothCommunication mChatService = null;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -74,6 +78,14 @@ public class BluetoothCommunication {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
+    }
+
+    public static BluetoothCommunication getmChatService() {
+        return mChatService;
+    }
+
+    public static void setmChatService(BluetoothCommunication mChatService) {
+        BluetoothCommunication.mChatService = mChatService;
     }
 
     /**
@@ -459,10 +471,8 @@ public class BluetoothCommunication {
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    // Read from the InputStream
-                    Log.d("기기에서 오는데이터", "여긴 들어가냐");
+
                     bytes = mmInStream.read(buffer);
-                    Log.d("기기에서 오는데이터", String.valueOf(bytes));
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(ReSightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
@@ -473,7 +483,6 @@ public class BluetoothCommunication {
                     // xxxx xxxx xxxx
                     // FEFE
 
-
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
                     byte id;
                     for(int i=0; i<bytes ; i++){
@@ -483,28 +492,19 @@ public class BluetoothCommunication {
                         if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
                             id = (byte)buffer[i+2];
 
-                            //accX = buffer[i+4] << 8 + buffer[i+5];
-                            //accY = buffer[i+6] << 8 + buffer[i+7];
-                            //accZ = buffer[i+8] << 8 + buffer[i+9];
 
                             accX = toUnsignedIntFromTwoBytes2(buffer[i+4], buffer[i+5]);
                             accY = toUnsignedIntFromTwoBytes2(buffer[i+6], buffer[i+7]);
                             accZ = toUnsignedIntFromTwoBytes2(buffer[i+8], buffer[i+9]);
 
-                            //accX = toUnsignedIntFromTwoBytes(buffer[i+4], buffer[i+5]);
-                            //accY = toUnsignedIntFromTwoBytes(buffer[i+6], buffer[i+7]);
-                            //accZ = toUnsignedIntFromTwoBytes(buffer[i+8], buffer[i+9]);
+                            for(int k = 0 ; k < 6 ; k++) {
+                                sensorsData[k] = (int)buffer[i+4+k];
+                                Log.d("sensor Data",String.valueOf(sensorsData[k]));
+                            }
 
-
-                           // _context.accX = accX;
-                           // _context.accY = accY;
-                           // _context.accZ = accZ;
-                           // _context.gyroX = gyroX;
-                           // _context.gyroY = gyroY;
-                           // _context.gyroZ = gyroZ;
-//
-                           // _context.updateMeasureRecord();
-
+                            Log.d("데이터 실제로오는건가 모르겠다.",String.valueOf(id));
+                            Log.d("byte 1은 뭐가될가", String.valueOf(buffer[i]));
+                            Log.d("데이터 바뀌는지 모르겠다.",String.valueOf(buffer[i+4]));
 
                             accX = 0;
                             accY = 0;
