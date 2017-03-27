@@ -25,28 +25,44 @@ public class MonitoringFragment extends Fragment {
     private Runnable mTimer;
     private double xValue = 5d;
     private LineGraphSeries<DataPoint> mSeries;
+    private GraphView[] graphViewArrays;
+    private LineGraphSeries<DataPoint>[] graphSeriesArrays;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("test", "OncreateView 호출됨");
         ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_monitoring,container,false);
-        GraphView graphView = (GraphView) rootView.findViewById(R.id.sensor_graph0);
-
-        initGraph(graphView);
+        //GraphView graphView = (GraphView) rootView.findViewById(R.id.sensor_graph0);
+        initGraph(rootView);
         return rootView;
     }
 
-    private void initGraph(GraphView graphView) {
-        graphView.getViewport().setMinY(0);
-        graphView.getViewport().setMaxY(100);
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setMinX(0);
-        graphView.getViewport().setMaxX(40);
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
-        mSeries = new LineGraphSeries<>();
-        graphView.addSeries(mSeries);
+    private void initGraph(ViewGroup rootView) {
+        graphViewArrays = new GraphView[6];
+        graphSeriesArrays = new LineGraphSeries[6];
+
+        graphViewArrays[0] = (GraphView) rootView.findViewById(R.id.sensor_graph0);
+        graphViewArrays[1] = (GraphView) rootView.findViewById(R.id.sensor_graph1);
+        graphViewArrays[2] = (GraphView) rootView.findViewById(R.id.sensor_graph2);
+        graphViewArrays[3] = (GraphView) rootView.findViewById(R.id.sensor_graph3);
+        graphViewArrays[4] = (GraphView) rootView.findViewById(R.id.sensor_graph4);
+        graphViewArrays[5] = (GraphView) rootView.findViewById(R.id.sensor_graph5);
+
+        for(int i = 0 ; i < 6 ; i++) {
+            graphViewArrays[i].getViewport().setMinY(0);
+            graphViewArrays[i].getViewport().setMaxY(100);
+            graphViewArrays[i].getViewport().setYAxisBoundsManual(true);
+            graphViewArrays[i].getViewport().setMinX(0);
+            graphViewArrays[i].getViewport().setMaxX(40);
+            graphViewArrays[i].getViewport().setXAxisBoundsManual(true);
+            graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
+            graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
+
+            graphSeriesArrays[i] = new LineGraphSeries<>();
+            graphViewArrays[i].addSeries(graphSeriesArrays[i]);
+        }
 
     }
 
@@ -58,12 +74,21 @@ public class MonitoringFragment extends Fragment {
             public void run() {
                 if(xValue == 40) {
                     xValue = 0 ;
-                    mSeries.resetData(new DataPoint[] {
-                            new DataPoint(xValue,BluetoothCommunication.sensorsData[0])
-                    });
+                    graphSeriesArrays[0].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[0])});
+                    graphSeriesArrays[1].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[1])});
+                    graphSeriesArrays[2].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[2])});
+                    graphSeriesArrays[3].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[3])});
+                    graphSeriesArrays[4].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[4])});
+                    graphSeriesArrays[5].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[5])});
+
                 }
                 xValue += 1d;
-                mSeries.appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[0]), false, 40);
+                graphSeriesArrays[0].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[0]), false, 40);
+                graphSeriesArrays[1].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[1]), false, 40);
+                graphSeriesArrays[2].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[2]), false, 40);
+                graphSeriesArrays[3].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[3]), false, 40);
+                graphSeriesArrays[4].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[4]), false, 40);
+                graphSeriesArrays[5].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[5]), false, 40);
                 mHanler.postDelayed(this,50); // 0.5초후에 그래프 갱신
             }
         };

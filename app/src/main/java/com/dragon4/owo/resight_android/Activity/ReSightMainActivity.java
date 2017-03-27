@@ -229,14 +229,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 currentSelectedFragment = monitoringFragment;
                 byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x10, (byte)0xFE, (byte)0xFE};
                 sendMessage2(buff);
-                //byte[] buff2 = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x12, (byte)0xFE, (byte)0xFE};
-               // sendMessage2(buff2);
-               // byte[] buff3 = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x12, (byte)0xFE, (byte)0xFE};
-               // sendMessage2(buff3);
-               // byte[] buff4 = {(byte)0xFF, (byte)0xFF, (byte)Golfit_Left_ID, (byte)0x13, (byte)0xFE, (byte)0xFE};
-               // sendMessage2(buff4);
 
-               //sendMessage("1");
                 break;
             case 1:
                 currentSelectedFragment = handMotionFragment;
