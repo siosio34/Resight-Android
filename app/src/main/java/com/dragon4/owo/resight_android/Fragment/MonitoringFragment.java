@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dragon4.owo.resight_android.Blooth.BluetoothCommunication;
+import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -24,9 +27,15 @@ public class MonitoringFragment extends Fragment {
     private final Handler mHanler = new Handler();
     private Runnable mTimer;
     private double xValue = 5d;
-    private LineGraphSeries<DataPoint> mSeries;
     private GraphView[] graphViewArrays;
     private LineGraphSeries<DataPoint>[] graphSeriesArrays;
+
+
+    private String deviceID;
+    private SensorData sensorData;
+
+    public MonitoringFragment() {
+    }
 
 
     @Nullable
@@ -42,6 +51,7 @@ public class MonitoringFragment extends Fragment {
     private void initGraph(ViewGroup rootView) {
         graphViewArrays = new GraphView[6];
         graphSeriesArrays = new LineGraphSeries[6];
+
 
         graphViewArrays[0] = (GraphView) rootView.findViewById(R.id.sensor_graph0);
         graphViewArrays[1] = (GraphView) rootView.findViewById(R.id.sensor_graph1);
@@ -89,6 +99,7 @@ public class MonitoringFragment extends Fragment {
                 graphSeriesArrays[3].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[3]), false, 40);
                 graphSeriesArrays[4].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[4]), false, 40);
                 graphSeriesArrays[5].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[5]), false, 40);
+
                 mHanler.postDelayed(this,50); // 0.5초후에 그래프 갱신
             }
         };

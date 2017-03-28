@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "346366222897",
+    "firebase_url": "https://resight-c1ebc.firebaseio.com",
+    "project_id": "resight-c1ebc",
+    "storage_bucket": "resight-c1ebc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346366222897:android:e8332450336371fa",
+        "android_client_info": {
+          "package_name": "com.dragon4.owo.resight_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346366222897-adg7gsost7uuv2t59bvp1tfmiqca3p4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByRv8xtJx2wRT10iiLrYJeuD4aOhstcxM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

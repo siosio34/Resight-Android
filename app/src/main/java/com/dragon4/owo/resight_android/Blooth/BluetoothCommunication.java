@@ -11,6 +11,9 @@ import android.os.Message;
 import android.util.Log;
 
 import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
+import com.dragon4.owo.resight_android.Model.SensorData;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +69,11 @@ public class BluetoothCommunication {
     public int gyroX = 0;
     public int gyroY = 0;
     public int gyroZ = 0;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    private SensorData sensorData;
+
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -502,8 +510,13 @@ public class BluetoothCommunication {
                                 Log.d("sensor Data",String.valueOf(sensorsData[k]));
                             }
 
-                            Log.d("데이터 실제로오는건가 모르겠다.",String.valueOf(id));
-                            Log.d("byte 1은 뭐가될가", String.valueOf(buffer[i]));
+                            String deviceID = "resight01";
+                            myRef = database.getReference("monitor_result");
+
+                            sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
+                            myRef.child(deviceID).child("sensors").push().setValue(sensorData);
+
+
                             Log.d("데이터 바뀌는지 모르겠다.",String.valueOf(buffer[i+4]));
 
                             accX = 0;
