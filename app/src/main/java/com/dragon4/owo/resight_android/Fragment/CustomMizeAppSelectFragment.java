@@ -91,7 +91,7 @@ public class CustomMizeAppSelectFragment extends Fragment {
             appImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //customContext.startService(new Intent(customContext,OnTopActivityService.class));
+                //    customContext.startService(new Intent(customContext,OnTopActivityService.class));
                     // 이거활성화시 좌표 받아올수 있다
                     Intent intent = new Intent(Intent.ACTION_RUN);
                     intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));

@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import com.dragon4.owo.resight_android.Blooth.BluetoothCommunication;
 import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -29,7 +27,6 @@ public class MonitoringFragment extends Fragment {
     private double xValue = 5d;
     private GraphView[] graphViewArrays;
     private LineGraphSeries<DataPoint>[] graphSeriesArrays;
-
 
     private String deviceID;
     private SensorData sensorData;
@@ -51,7 +48,6 @@ public class MonitoringFragment extends Fragment {
     private void initGraph(ViewGroup rootView) {
         graphViewArrays = new GraphView[6];
         graphSeriesArrays = new LineGraphSeries[6];
-
 
         graphViewArrays[0] = (GraphView) rootView.findViewById(R.id.sensor_graph0);
         graphViewArrays[1] = (GraphView) rootView.findViewById(R.id.sensor_graph1);

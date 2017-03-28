@@ -70,8 +70,7 @@ public class BluetoothCommunication {
     public int gyroY = 0;
     public int gyroZ = 0;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef;
+
     private SensorData sensorData;
 
 
@@ -481,29 +480,16 @@ public class BluetoothCommunication {
                 try {
 
                     bytes = mmInStream.read(buffer);
-
-                    // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(ReSightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-
-                    /* parsing */
-                    // FFFF
-                    // xxxx xxxx xxxx
-                    // xxxx xxxx xxxx
-                    // FEFE
 
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
                     byte id;
                     for(int i=0; i<bytes ; i++){
-                        //if((Integer.toString(((byte)buffer[i] & 0xff)+0x100,16).substring(1)) == "aa"){
-                        //    if((Integer.toString(((byte)buffer[i] & 0xff)+0x100,16).substring(1)) == "ab"){
+
 
                         if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
                             id = (byte)buffer[i+2];
 
-
-                            accX = toUnsignedIntFromTwoBytes2(buffer[i+4], buffer[i+5]);
-                            accY = toUnsignedIntFromTwoBytes2(buffer[i+6], buffer[i+7]);
-                            accZ = toUnsignedIntFromTwoBytes2(buffer[i+8], buffer[i+9]);
 
                             for(int k = 0 ; k < 6 ; k++) {
                                 sensorsData[k] = (int)buffer[i+4+k];
@@ -511,21 +497,12 @@ public class BluetoothCommunication {
                             }
 
                             String deviceID = "resight01";
-                            myRef = database.getReference("monitor_result");
-
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("monitor_result");
                             sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
                             myRef.child(deviceID).child("sensors").push().setValue(sensorData);
 
 
-                            Log.d("데이터 바뀌는지 모르겠다.",String.valueOf(buffer[i+4]));
-
-                            accX = 0;
-                            accY = 0;
-                            accZ = 0;
-
-                            gyroX = 0;
-                            gyroY = 0;
-                            gyroZ = 0;
                         }
                     }
                 } catch (IOException e) {

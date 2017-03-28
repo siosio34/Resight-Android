@@ -25,6 +25,7 @@ public class CustomMizeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("test", "OncreateView 호출됨");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_customize,container,false);
+
         registerFloatingButton(rootView);
         return rootView;
     }
