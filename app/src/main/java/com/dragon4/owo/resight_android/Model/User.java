@@ -5,4 +5,5 @@ package com.dragon4.owo.resight_android.Model;
  */
 
 public class User {
+
 }

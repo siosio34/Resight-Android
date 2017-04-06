@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:id="@+id/custom_layout_parent"
     tools:context="com.dragon4.owo.resight_android.Activity.CustomizeDialogActivity"
     >
 
@@ -22,6 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000000"
         app:layout_constraintLeft_toLeftOf="@+id/custom_app_dialog_activity"
         app:layout_constraintTop_toTopOf="@+id/custom_app_dialog_activity"
         android:layout_marginLeft="25dp"
@@ -34,6 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000000"
         app:layout_constraintLeft_toLeftOf="@+id/custom_app_dialog_activity"
         app:layout_constraintTop_toTopOf="@+id/custom_app_dialog_activity"
         android:layout_marginLeft="25dp"
@@ -41,6 +43,7 @@
         android:layout_marginTop="60dp"
         android:text="1. 아래 손 모양중 하나 선택 \n2. 손동작과 매칭되는 버튼 선택"
         android:textSize="16sp"
+
         />
     
     <ImageView
@@ -54,7 +57,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="120dp"
-        android:onClick="handButtonClick"
+        android:onClick="handbuttonClick"
         />
 
     <ImageView
@@ -68,7 +71,8 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="120dp"
-        android:onClick="handButtonClick"
+
+
         />
 
     <ImageView
@@ -82,7 +86,6 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="120dp"
-        android:onClick="handButtonClick"
 
         />
 

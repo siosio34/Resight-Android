@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dragon4.owo.resight_android.R;
+import com.dragon4.owo.resight_android.service.OnTopActivityService;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CustomMizeAppSelectFragment extends Fragment {
     private GridView customAppGridView;
     private List<ResolveInfo> appsInfo;
     private PackageManager packageManager;
-    private Context customContext;
+    public static Context customContext;
 
     @Override
     public void onAttach(Context context) {
@@ -91,11 +92,22 @@ public class CustomMizeAppSelectFragment extends Fragment {
             appImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                //    customContext.startService(new Intent(customContext,OnTopActivityService.class));
+
                     // 이거활성화시 좌표 받아올수 있다
                     Intent intent = new Intent(Intent.ACTION_RUN);
                     intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));
                     customContext.startActivity(intent);
+
+                    Intent serviceIntent = new Intent(customContext,OnTopActivityService.class);
+                    customContext.startService(serviceIntent);
+                    customContext.stopService(serviceIntent);
+                    // 서비스를 삭제할때에는 서비스를 실행시켜준곳에서 해야된다.
+
+                   // ConstraintLayout constraintLayout = new ConstraintLayout(this);
+
+                   // LayoutInflater mInflater = (LayoutInflater) customContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                   // mInflater.inflate(R.layout.activity_customize_dialog,null);
+
                 }
             });
             TextView appTextView = (TextView) convertView.findViewById(R.id.custom_category_item_textView);

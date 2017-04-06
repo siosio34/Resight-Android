@@ -41,8 +41,6 @@
             android:name=".Activity.CustomizeDialogActivity"
             android:theme="@android:style/Theme.Translucent"
 
-
-
            />
     </application>
 

@@ -138,7 +138,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         public void handleMessage(Message msg) {
             Log.d(TAG,String.valueOf(msg.what));
             switch (msg.what) {
-
                 case MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothCommunication.STATE_CONNECTED:
@@ -152,17 +151,13 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                     break;
                 case MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
                     Log.d(TAG,writeMessage);
                     break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     Log.d(TAG,readMessage);
-
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
