@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.dragon4.owo.resight_android.Blooth.BluetoothCommunication;
+import com.dragon4.owo.resight_android.util.BluetoothCommunication;
 import com.dragon4.owo.resight_android.Fragment.CustomMizeFragment;
 import com.dragon4.owo.resight_android.Fragment.HandMotionFragment;
 import com.dragon4.owo.resight_android.Fragment.MarketFragment;
