@@ -27,6 +27,8 @@ public class MonitoringFragment extends Fragment {
     private double xValue = 5d;
     private GraphView[] graphViewArrays;
     private LineGraphSeries<DataPoint>[] graphSeriesArrays;
+    //int[] randNumArray = new int[6];
+    int randNum;
 
     private String deviceID;
     private SensorData sensorData;
@@ -59,12 +61,12 @@ public class MonitoringFragment extends Fragment {
         for(int i = 0 ; i < 6 ; i++) {
             graphViewArrays[i].getViewport().setMinY(0);
             graphViewArrays[i].getViewport().setMaxY(100);
-            graphViewArrays[i].getViewport().setYAxisBoundsManual(true);
+            graphViewArrays[i].getViewport().setYAxisBoundsManual(false);
             graphViewArrays[i].getViewport().setMinX(0);
             graphViewArrays[i].getViewport().setMaxX(40);
             graphViewArrays[i].getViewport().setXAxisBoundsManual(true);
             graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
-            graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
+            //graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
 
             graphSeriesArrays[i] = new LineGraphSeries<>();
             graphViewArrays[i].addSeries(graphSeriesArrays[i]);
@@ -78,23 +80,38 @@ public class MonitoringFragment extends Fragment {
         mTimer = new Runnable() {
             @Override
             public void run() {
-                if(xValue == 40) {
-                    xValue = 0 ;
-                    graphSeriesArrays[0].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[0])});
-                    graphSeriesArrays[1].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[1])});
-                    graphSeriesArrays[2].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[2])});
-                    graphSeriesArrays[3].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[3])});
-                    graphSeriesArrays[4].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[4])});
-                    graphSeriesArrays[5].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[5])});
 
+                if(xValue == 40) {
+                    xValue = 0;
+                    for(int i=0 ; i < 6 ; i++) {
+                        randNum = (int) ((Math.random() * 100) + 1);
+                        graphSeriesArrays[i].resetData(new DataPoint[] {new DataPoint(xValue,randNum)});
+                    }
+                } else {
+                    xValue += 1d;
+                    for(int i=0 ; i < 6 ; i++) {
+                        randNum = (int) ((Math.random() * 100) + 1);
+                        graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), false, 40);
+                    }
                 }
-                xValue += 1d;
-                graphSeriesArrays[0].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[0]), false, 40);
-                graphSeriesArrays[1].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[1]), false, 40);
-                graphSeriesArrays[2].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[2]), false, 40);
-                graphSeriesArrays[3].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[3]), false, 40);
-                graphSeriesArrays[4].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[4]), false, 40);
-                graphSeriesArrays[5].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[5]), false, 40);
+
+             //   if(xValue == 40) {
+             //       xValue = 0 ;
+             //       graphSeriesArrays[0].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[0])});
+             //       graphSeriesArrays[1].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[1])});
+             //       graphSeriesArrays[2].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[2])});
+             //       graphSeriesArrays[3].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[3])});
+             //       graphSeriesArrays[4].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[4])});
+             //       graphSeriesArrays[5].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothCommunication.sensorsData[5])});
+//
+             //   }
+             //   xValue += 1d;
+             //   graphSeriesArrays[0].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[0]), false, 40);
+             //   graphSeriesArrays[1].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[1]), false, 40);
+             //   graphSeriesArrays[2].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[2]), false, 40);
+             //   graphSeriesArrays[3].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[3]), false, 40);
+             //   graphSeriesArrays[4].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[4]), false, 40);
+             //   graphSeriesArrays[5].appendData(new DataPoint(xValue, BluetoothCommunication.sensorsData[5]), false, 40);
 
                 mHanler.postDelayed(this,50); // 0.5초후에 그래프 갱신
             }
