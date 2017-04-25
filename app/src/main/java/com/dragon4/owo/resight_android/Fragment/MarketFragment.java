@@ -114,6 +114,7 @@ public class MarketFragment extends Fragment {
             uploadAppCall.enqueue(new Callback<AppStore>() {
                 @Override
                 public void onResponse(Call<AppStore> call, Response<AppStore> response) {
+
                     Log.d(TAG,response.body().toString());
                     Log.d(TAG,"Success AppStoreData to Server");
                 }

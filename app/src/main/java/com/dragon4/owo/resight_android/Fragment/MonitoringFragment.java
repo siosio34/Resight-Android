@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dragon4.owo.resight_android.Blooth.BluetoothCommunication;
+import com.dragon4.owo.resight_android.Bluetooth.BluetoothCommunication;
 import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
 import com.jjoe64.graphview.GraphView;
