@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Bluetooth;
+package com.dragon4.owo.resight_android.util;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -41,6 +41,7 @@ public class BluetoothCommunication {
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
