@@ -27,10 +27,10 @@ public class MonitoringFragment extends Fragment {
 
     private final Handler mHanler = new Handler();
     private Runnable mTimer;
-    private double xValue = 5d;
+    private double xValue = 0d;
     private GraphView[] graphViewArrays;
     private LineGraphSeries<DataPoint>[] graphSeriesArrays;
-    //int[] randNumArray = new int[6];
+
     int randNum;
 
     private String deviceID;
@@ -44,7 +44,7 @@ public class MonitoringFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("test", "OncreateView 호출됨");
-        ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_monitoring,container,false);
+        ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_monitoring, container, false);
         //GraphView graphView = (GraphView) rootView.findViewById(R.id.sensor_graph0);
         initGraph(rootView);
         return rootView;
@@ -61,14 +61,15 @@ public class MonitoringFragment extends Fragment {
         graphViewArrays[4] = (GraphView) rootView.findViewById(R.id.sensor_graph4);
         graphViewArrays[5] = (GraphView) rootView.findViewById(R.id.sensor_graph5);
 
-        for(int i = 0 ; i < 6 ; i++) {
+        for (int i = 0; i < 6; i++) {
             graphViewArrays[i].getViewport().setMinY(0);
             graphViewArrays[i].getViewport().setMaxY(100);
-            graphViewArrays[i].getViewport().setYAxisBoundsManual(false);
+            graphViewArrays[i].getViewport().setYAxisBoundsManual(true);
+
             graphViewArrays[i].getViewport().setMinX(0);
             graphViewArrays[i].getViewport().setMaxX(40);
             graphViewArrays[i].getViewport().setXAxisBoundsManual(true);
-            graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
+            //graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
             //graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
 
             graphSeriesArrays[i] = new LineGraphSeries<>();
@@ -79,29 +80,18 @@ public class MonitoringFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-
         mTimer = new Runnable() {
             @Override
             public void run() {
-
-                if(xValue == 40) {
-                    xValue = 0;
-                    for(int i=0 ; i < 6 ; i++) {
-                        randNum = (int) ((Math.random() * 100) + 1);
-                        graphSeriesArrays[i].resetData(new DataPoint[] {new DataPoint(xValue,randNum)});
-                    }
-                } else {
-                    xValue += 1d;
-                    for(int i=0 ; i < 6 ; i++) {
-                        randNum = (int) ((Math.random() * 100) + 1);
-                        graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), false, 40);
-                    }
+                xValue += 1d;
+                for (int i = 0; i < 6; i++) {
+                    randNum = (int) ((Math.random() * 100) + 1);
+                    graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), true, 40);
                 }
-
-                mHanler.postDelayed(this,50); // 0.5초후에 그래프 갱신
+                mHanler.postDelayed(this,50); //
             }
         };
-        mHanler.postDelayed(mTimer,700); // 0.7초후에 타이머 재시작.
+        mHanler.postDelayed(mTimer, 1000); //
     }
 
     public void onPause() {
