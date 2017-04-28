@@ -9,6 +9,7 @@
     android:id="@+id/hand_motion_fragment_layout"
     android:background="#F2F2F2">
 
+
     <com.jjoe64.graphview.GraphView
         android:id="@+id/sensor_graph0"
         app:layout_constraintTop_toTopOf="parent"
@@ -86,6 +87,7 @@
         android:layout_marginLeft="5dp"
         android:layout_width="0dp"
         android:layout_height="70dp" />
+
 
 </android.support.constraint.ConstraintLayout>
 

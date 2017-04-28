@@ -8,13 +8,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.SyncStateContract;
 import android.util.Log;
 
 import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
 import com.dragon4.owo.resight_android.Model.SensorData;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,17 +38,17 @@ public class BluetoothSensorService {
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final UUID MY_UUID_INSECURE =
-            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
 
     // Member fields
     private final BluetoothAdapter mAdapter;
     private final Handler mHandler;
-    private AcceptThread mSecureAcceptThread;
-    private AcceptThread mInsecureAcceptThread;
-    private ConnectThread mConnectThread;
-    private ConnectedThread mConnectedThread;
+    private AcceptThread mSensorSecureAcceptThread;
+    private ConnectThread mSensorConnectThread;
+    private ConnectedThread mSensorConnectedThread;
+
     private int mState;
+    private int newState;
 
     private static BluetoothSensorService mChatService = null;
 
@@ -63,7 +60,6 @@ public class BluetoothSensorService {
 
     private SensorData sensorData;
 
-
     /**
      * Constructor. Prepares a new BluetoothChat session.
      * @param context  The UI Activity Context
@@ -74,15 +70,8 @@ public class BluetoothSensorService {
 
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
+        newState = mState;
         mHandler = handler;
-    }
-
-    public static BluetoothSensorService getmChatService() {
-        return mChatService;
-    }
-
-    public static void setmChatService(BluetoothSensorService mChatService) {
-        BluetoothSensorService.mChatService = mChatService;
     }
 
     /**
@@ -110,22 +99,19 @@ public class BluetoothSensorService {
         if (D) Log.d(TAG, "start");
 
         // Cancel any thread attempting to make a connection
-        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+        if (mSensorConnectThread != null) {
+            mSensorConnectThread.cancel(); mSensorConnectThread = null;}
 
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
-
-        setState(STATE_LISTEN);
+        if (mSensorConnectedThread != null) {
+            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
 
         // Start the thread to listen on a BluetoothServerSocket
-        if (mSecureAcceptThread == null) {
-            mSecureAcceptThread = new AcceptThread(true);
-            mSecureAcceptThread.start();
+        if (mSensorSecureAcceptThread == null) {
+            mSensorSecureAcceptThread = new AcceptThread(true);
+            mSensorSecureAcceptThread.start();
         }
-        if (mInsecureAcceptThread == null) {
-            mInsecureAcceptThread = new AcceptThread(false);
-            mInsecureAcceptThread.start();
-        }
+        setState(STATE_LISTEN);
     }
 
     /**
@@ -138,15 +124,17 @@ public class BluetoothSensorService {
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
-            if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+            if (mSensorConnectThread != null) {
+                mSensorConnectThread.cancel(); mSensorConnectThread = null;}
         }
 
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
+        if (mSensorConnectedThread != null) {
+            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
 
         // Start the thread to connect with the given device
-        mConnectThread = new ConnectThread(device, secure);
-        mConnectThread.start();
+        mSensorConnectThread = new ConnectThread(device, secure);
+        mSensorConnectThread.start();
         setState(STATE_CONNECTING);
     }
 
@@ -160,24 +148,23 @@ public class BluetoothSensorService {
         if (D) Log.d(TAG, "connected, Socket Type:" + socketType);
 
         // Cancel the thread that completed the connection
-        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+        if (mSensorConnectThread != null) {
+            mSensorConnectThread.cancel(); mSensorConnectThread = null;}
 
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
+        if (mSensorConnectedThread != null) {
+            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
 
         // Cancel the accept thread because we only want to connect to one device
-        if (mSecureAcceptThread != null) {
-            mSecureAcceptThread.cancel();
-            mSecureAcceptThread = null;
-        }
-        if (mInsecureAcceptThread != null) {
-            mInsecureAcceptThread.cancel();
-            mInsecureAcceptThread = null;
+        if (mSensorSecureAcceptThread != null) {
+            mSensorSecureAcceptThread.cancel();
+            mSensorSecureAcceptThread = null;
         }
 
+
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(socket, socketType);
-        mConnectedThread.start();
+        mSensorConnectedThread = new ConnectedThread(socket, socketType);
+        mSensorConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(BluetoothConstants.MESSAGE_DEVICE_NAME);
@@ -195,25 +182,21 @@ public class BluetoothSensorService {
     public synchronized void stop() {
         if (D) Log.d(TAG, "stop");
 
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
+        if (mSensorConnectThread != null) {
+            mSensorConnectThread.cancel();
+            mSensorConnectThread = null;
         }
 
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
+        if (mSensorConnectedThread != null) {
+            mSensorConnectedThread.cancel();
+            mSensorConnectedThread = null;
         }
 
-        if (mSecureAcceptThread != null) {
-            mSecureAcceptThread.cancel();
-            mSecureAcceptThread = null;
+        if (mSensorSecureAcceptThread != null) {
+            mSensorSecureAcceptThread.cancel();
+            mSensorSecureAcceptThread = null;
         }
 
-        if (mInsecureAcceptThread != null) {
-            mInsecureAcceptThread.cancel();
-            mInsecureAcceptThread = null;
-        }
         setState(STATE_NONE);
     }
 
@@ -228,10 +211,20 @@ public class BluetoothSensorService {
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
             if (mState != STATE_CONNECTED) return;
-            r = mConnectedThread;
+            r = mSensorConnectedThread;
         }
         // Perform the write unsynchronized
+        Log.d("byte to string", new String(out));
+        Log.d("byte to hex",byteArrayToHex(out));
+        // Perform the write unsynchronized
         r.write(out);
+    }
+
+    private String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder();
+        for(final byte b: a)
+            sb.append(String.format("%02x ", b&0xff));
+        return sb.toString();
     }
 
     /**
@@ -241,9 +234,11 @@ public class BluetoothSensorService {
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(BluetoothConstants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(ReSightMainActivity.TOAST, "Unable to connect device");
+        bundle.putString(BluetoothConstants.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+
+        mState = STATE_NONE;
 
         // Start the service over to restart listening mode
         BluetoothSensorService.this.start();
@@ -259,6 +254,8 @@ public class BluetoothSensorService {
         bundle.putString(ReSightMainActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+
+        mState = STATE_NONE;
 
         // Start the service over to restart listening mode
         BluetoothSensorService.this.start();
@@ -280,15 +277,15 @@ public class BluetoothSensorService {
 
             // Create a new listening server socket
             try {
-                if (secure) {
-                    tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
+                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
                             MY_UUID_SECURE);
-                }
+
                 // TODO: 2017-04-27 if insecure 
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
             }
             mmServerSocket = tmp;
+            mState = STATE_LISTEN;
         }
 
         public void run() {
@@ -369,18 +366,16 @@ public class BluetoothSensorService {
                 if (secure) {
                     tmp = device.createRfcommSocketToServiceRecord(
                             MY_UUID_SECURE);
-                } else {
-                    tmp = device.createInsecureRfcommSocketToServiceRecord(
-                            MY_UUID_INSECURE);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
             }
             mmSocket = tmp;
+            mState = STATE_CONNECTING;
         }
 
         public void run() {
-            Log.i(TAG, "BEGIN mConnectThread SocketType:" + mSocketType);
+            Log.i(TAG, "BEGIN mSensorConnectThread SocketType:" + mSocketType);
             setName("ConnectThread" + mSocketType);
 
             // Always cancel discovery because it will slow down a connection
@@ -407,7 +402,7 @@ public class BluetoothSensorService {
 
             // Reset the ConnectThread because we're done
             synchronized (BluetoothSensorService.this) {
-                mConnectThread = null;
+                mSensorConnectThread = null;
             }
 
             // Start the connected thread
@@ -448,53 +443,40 @@ public class BluetoothSensorService {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
-        }
-
-        private boolean isEndPacket(byte[] buffer, int idx)
-        {
-            if(((byte)buffer[idx] == (byte)0xFE) && ((byte)buffer[idx+1]  == (byte)0xFE)) return true;
-            return false;
+            mState = STATE_CONNECTED;
         }
 
         public void run() {
-            Log.i(TAG, "BEGIN mConnectedThread");
+            Log.i(TAG, "BEGIN mSensorConnectedThread");
             byte[] buffer = new byte[20];
             int bytes;
 
             // Keep listening to the InputStream while connected
-            while (true) {
+            while (mState == STATE_CONNECTED) {
                 try {
-
                     bytes = mmInStream.read(buffer);
                     mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-
+                    //Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-                    byte id;
-                    for(int i=0; i<bytes ; i++){
-
-                        if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
-                            id = (byte)buffer[i+2];
-
-
-                            for(int k = 0 ; k < 6 ; k++) {
-                                sensorsData[k] = (int)buffer[i+4+k];
-                                Log.d("sensor Data",String.valueOf(sensorsData[k]));
-                            }
-
-                            String deviceID = "resight01";
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef = database.getReference("monitor_result");
-                            sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
-                            myRef.child(deviceID).child("sensors").push().setValue(sensorData);
-
-
-                        }
-                    }
+                    // TODO: 2017-04-28 통신 로직 센서값 들어오면 다시 코딩. 
+                    //byte id;
+                    //for(int i=0; i<bytes ; i++){
+                    //    if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
+                    //        id = (byte)buffer[i+2];
+                    //        for(int k = 0 ; k < 6 ; k++) {
+                    //            sensorsData[k] = (int)buffer[i+4+k];
+                    //            Log.d("sensor Data",String.valueOf(sensorsData[k]));
+                    //        }
+                    //        String deviceID = "resight01";
+                    //        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    //        DatabaseReference myRef = database.getReference("monitor_result");
+                    //        sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
+                    //        myRef.child(deviceID).child("sensors").push().setValue(sensorData);
+                    //    }
+                    //}
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
-                    // Start the service over to restart listening mode
-                    BluetoothSensorService.this.start();
                     break;
                 }
             }

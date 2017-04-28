@@ -41,7 +41,6 @@ public class CustomMizeAppSelectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-
         getApplicaitonList();
 
         ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_customize_app_select,container,false);

@@ -98,24 +98,6 @@ public class MonitoringFragment extends Fragment {
                     }
                 }
 
-             //   if(xValue == 40) {
-             //       xValue = 0 ;
-             //       graphSeriesArrays[0].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[0])});
-             //       graphSeriesArrays[1].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[1])});
-             //       graphSeriesArrays[2].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[2])});
-             //       graphSeriesArrays[3].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[3])});
-             //       graphSeriesArrays[4].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[4])});
-             //       graphSeriesArrays[5].resetData(new DataPoint[] {new DataPoint(xValue,BluetoothSensorService.sensorsData[5])});
-//
-             //   }
-             //   xValue += 1d;
-             //   graphSeriesArrays[0].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[0]), false, 40);
-             //   graphSeriesArrays[1].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[1]), false, 40);
-             //   graphSeriesArrays[2].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[2]), false, 40);
-             //   graphSeriesArrays[3].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[3]), false, 40);
-             //   graphSeriesArrays[4].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[4]), false, 40);
-             //   graphSeriesArrays[5].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[5]), false, 40);
-
                 mHanler.postDelayed(this,50); // 0.5초후에 그래프 갱신
             }
         };
