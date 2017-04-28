@@ -4,7 +4,7 @@
     tools:context="com.dragon4.owo.resight_android.Activity.ReSightMainActivity">
 
     <item
-        android:id="@+id/action_blooth"
+        android:id="@+id/action_bluetooth"
         android:title="@string/action_blooth"/>
 
     <item

@@ -53,7 +53,6 @@ public class BluetoothListAdapter extends BaseAdapter {
     }
 
     public void addBloothDeviceToList(BluetoothDevice bluetoothDevice) {
-
         bloothDeviceList.add(bluetoothDevice);
     }
 

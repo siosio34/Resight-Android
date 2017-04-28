@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.dragon4.owo.resight_android.util.BluetoothCommunication;
+import com.dragon4.owo.resight_android.util.BluetoothConstants;
+import com.dragon4.owo.resight_android.util.BluetoothHandService;
+import com.dragon4.owo.resight_android.util.BluetoothSensorService;
 import com.dragon4.owo.resight_android.Fragment.CustomMizeFragment;
 import com.dragon4.owo.resight_android.Fragment.HandMotionFragment;
 import com.dragon4.owo.resight_android.Fragment.MarketFragment;
@@ -29,12 +31,9 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 public class ReSightMainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
     private static final int REQUEST_CONNECT_DEVICE = 8009;
+    private static final int REQUEST_SETTING = 8010;
+    private static final int REQUEST_ENABLE_BT = 8011;
 
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
 
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
@@ -45,16 +44,16 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
-    private BluetoothCommunication mChatService = null;
     private StringBuffer mOutStringBuffer;
 
     private MonitoringFragment monitoringFragment;
-    private HandMotionFragment handMotionFragment;
     private CustomMizeFragment customizeFragment;
     private MarketFragment     marketFragment;
+
+    private BluetoothHandService mHandService = null;
+    private BluetoothSensorService mSensorService = null;
+
     Toolbar toolbar;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +72,22 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             finish();
             return;
         }
-
-        mChatService = new BluetoothCommunication(this, mHandler);
         mOutStringBuffer = new StringBuffer("");
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // If BT is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            // Otherwise, setup the chat session
+        } else if (mHandService == null || mSensorService == null) {
+        //    mHandService = new BluetoothHandService(getApplicationContext(), mHandler);
+            mSensorService = new BluetoothSensorService(this, mHandler);
+        }
     }
 
     @Override
@@ -94,18 +105,15 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.icon_monitor, "모니터링").setActiveColorResource(R.color.colorBottomNavigation))
-                .addItem(new BottomNavigationItem(R.drawable.icon_hand, "손 동작").setActiveColorResource(R.color.colorBottomNavigation))
                 .addItem(new BottomNavigationItem(R.drawable.icon_setting, "커스터마이징").setActiveColorResource(R.color.colorBottomNavigation))
                 .addItem(new BottomNavigationItem(R.drawable.icon_market, "마켓").setActiveColorResource(R.color.colorBottomNavigation))
-                .setFirstSelectedPosition(lastSelectedPosition > 3 ? 3 : lastSelectedPosition)
+                .setFirstSelectedPosition(lastSelectedPosition > 2 ? 2 : lastSelectedPosition)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
     }
 
     private void initFragment() {
-
         monitoringFragment = new MonitoringFragment();
-        handMotionFragment = new HandMotionFragment();
         customizeFragment = new CustomMizeFragment();
         marketFragment = new MarketFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container,monitoringFragment).commit();
@@ -119,14 +127,14 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
 
-        if (id == R.id.action_blooth) {
-            Intent bloothMoveIntent = new Intent(ReSightMainActivity.this, BluetoothSearchActivity.class);
-            startActivityForResult(bloothMoveIntent, REQUEST_CONNECT_DEVICE);
+        if (id == R.id.action_bluetooth) {
+            Intent bluetoothMoveIntent = new Intent(ReSightMainActivity.this, BluetoothSearchActivity.class);
+            startActivityForResult(bluetoothMoveIntent, REQUEST_CONNECT_DEVICE);
             return true;
         } else if(id == R.id.action_settings) {
+            // 셋팅 관련 내용,
             return true; //
         }
 
@@ -136,102 +144,100 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.d(TAG,String.valueOf(msg.what));
+            Context context = getApplicationContext();
             switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
+                case BluetoothConstants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
-                        case BluetoothCommunication.STATE_CONNECTED:
-                            break;
-                        case BluetoothCommunication.STATE_CONNECTING:
-                            break;
-                        case BluetoothCommunication.STATE_LISTEN:
-                        case BluetoothCommunication.STATE_NONE:
-                            break;
+                    //    case BluetoothChatService.STATE_CONNECTED:
+                    //        setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+                    //        mConversationArrayAdapter.clear();
+                    //        break;
+                    //    case BluetoothChatService.STATE_CONNECTING:
+                    //        setStatus(R.string.title_connecting);
+                    //        break;
+                    //    case BluetoothChatService.STATE_LISTEN:
+                    //    case BluetoothChatService.STATE_NONE:
+                    //        setStatus(R.string.title_not_connected);
+                    //        break;
                     }
                     break;
-                case MESSAGE_WRITE:
+                case BluetoothConstants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    Log.d(TAG,writeMessage);
                     break;
-                case MESSAGE_READ:
+                case BluetoothConstants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d(TAG,readMessage);
                     break;
-                case MESSAGE_DEVICE_NAME:
+                case BluetoothConstants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Log.d(TAG,mConnectedDeviceName);
-                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    mConnectedDeviceName = msg.getData().getString(BluetoothConstants.DEVICE_NAME);
+                    if (null != context ) {
+                        Toast.makeText(context, "Connected to "
+                                + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    }
                     break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-                            Toast.LENGTH_SHORT).show();
+                case BluetoothConstants.MESSAGE_TOAST:
+                    if (null != context) {
+                        Toast.makeText(context, msg.getData().getString(BluetoothConstants.TOAST),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
         }
     };
 
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothCommunication.STATE_CONNECTED) {
-            Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mChatService.write(send);
-            Log.d("여기에들어옴","test");
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            //     mOutEditText.setText(mOutStringBuffer);
-        }
-    }
-
-    private void sendMessage2(byte[] message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothCommunication.STATE_CONNECTED) {
-            Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            mChatService.write(message);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            //     mOutEditText.setText(mOutStringBuffer);
-        }
-    }
-
-
+   //   private void sendMessage(String message) {
+   //       // Check that we're actually connected before trying anything
+   //       if (mChatService.getState() != BluetoothSensorService.STATE_CONNECTED) {
+   //           Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+   //           return;
+   //       }
+////
+   //       // Check that there's actually something to send
+   //       if (message.length() > 0) {
+   //           // Get the message bytes and tell the BluetoothChatService to write
+   //           byte[] send = message.getBytes();
+   //           mChatService.write(send);
+   //           Log.d("여기에들어옴","test");
+////
+   //           // Reset out string buffer to zero and clear the edit text field
+   //           mOutStringBuffer.setLength(0);
+   //           //     mOutEditText.setText(mOutStringBuffer);
+   //       }
+   //   }
+////
+   //   private void sendMessage2(byte[] message) {
+   //       // Check that we're actually connected before trying anything
+   //       if (mChatService.getState() != BluetoothSensorService.STATE_CONNECTED) {
+   //           Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+   //           return;
+   //       }
+////
+   //       // Check that there's actually something to send
+   //       if (message.length > 0) {
+   //           // Get the message bytes and tell the BluetoothChatService to write
+   //           mChatService.write(message);
+////
+   //           // Reset out string buffer to zero and clear the edit text field
+   //           mOutStringBuffer.setLength(0);
+   //           //     mOutEditText.setText(mOutStringBuffer);
+   //       }
+   //   }
     // Bottom Navigation Activity
-
-
     @Override
     public void onTabSelected(int position) {
         Fragment currentSelectedFragment = null;
         switch (position) {
             case 0:
                 currentSelectedFragment = monitoringFragment;
-                byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x10, (byte)0xFE, (byte)0xFE};
-                sendMessage2(buff);
                 break;
             case 1:
-                currentSelectedFragment = handMotionFragment;
-                break;
-            case 2:
                 currentSelectedFragment = customizeFragment;
                 break;
-            case 3:
+            case 2:
                 currentSelectedFragment = marketFragment;
                 break;
         }
@@ -246,10 +252,10 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     @Override
     public void onTabReselected(int position) {
 
-        if(position == 0) {
-            byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x10, (byte) 0xFE, (byte) 0xFE};
-            sendMessage2(buff);
-        }
+      //  if(position == 0) {
+      //      byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x10, (byte) 0xFE, (byte) 0xFE};
+      //      sendMessage2(buff);
+      //  }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -260,6 +266,13 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 if(resultCode == Activity.RESULT_OK) {
                     connectDevice(data,true);
                 }
+                break;
+            case REQUEST_SETTING:
+                if(resultCode == Activity.RESULT_OK) {
+                    // 셋팅 관련 내용
+                }
+                break;
+
         }
     }
 
@@ -268,10 +281,13 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         String address = data.getExtras()
                 .getString(BluetoothSearchActivity.EXTRA_DEVICE_ADDRESS);
 
+        String name =  data.getExtras()
+                .getString(BluetoothSearchActivity.EXTRA_DEVICE_NAME);
+
         Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
 
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        mChatService.connect(device, secure);
+     //   mChatService.connect(device, secure);
 
     }
 

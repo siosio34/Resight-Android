@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.SyncStateContract;
 import android.util.Log;
 
 import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
@@ -24,19 +25,18 @@ import java.util.UUID;
  * Created by joyeongje on 2017. 3. 18..
  */
 
-public class BluetoothCommunication {
+public class BluetoothSensorService {
 
     ReSightMainActivity _context;
 
     public static int sensorsData[] = new int[6];
 
     // Debugging
-    private static final String TAG = "BluetoothCommunication";
+    private static final String TAG = "BluetoothSensorService";
     private static final boolean D = true;
 
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
-    private static final String NAME_INSECURE = "BluetoothChatInsecure";
 
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
@@ -53,23 +53,13 @@ public class BluetoothCommunication {
     private ConnectedThread mConnectedThread;
     private int mState;
 
-    private static BluetoothCommunication mChatService = null;
+    private static BluetoothSensorService mChatService = null;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
-
-
-    public int accX = 0;
-    public int accY = 0;
-    public int accZ = 0;
-
-    public int gyroX = 0;
-    public int gyroY = 0;
-    public int gyroZ = 0;
-
 
     private SensorData sensorData;
 
@@ -79,7 +69,7 @@ public class BluetoothCommunication {
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothCommunication(Context context, Handler handler) {
+    public BluetoothSensorService(Context context, Handler handler) {
         this._context = (ReSightMainActivity) context;
 
         mAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -87,12 +77,12 @@ public class BluetoothCommunication {
         mHandler = handler;
     }
 
-    public static BluetoothCommunication getmChatService() {
+    public static BluetoothSensorService getmChatService() {
         return mChatService;
     }
 
-    public static void setmChatService(BluetoothCommunication mChatService) {
-        BluetoothCommunication.mChatService = mChatService;
+    public static void setmChatService(BluetoothSensorService mChatService) {
+        BluetoothSensorService.mChatService = mChatService;
     }
 
     /**
@@ -104,7 +94,7 @@ public class BluetoothCommunication {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(ReSightMainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(BluetoothConstants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -189,10 +179,8 @@ public class BluetoothCommunication {
         mConnectedThread = new ConnectedThread(socket, socketType);
         mConnectedThread.start();
 
-
-
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(BluetoothConstants.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(ReSightMainActivity.DEVICE_NAME, device.getName());
         msg.setData(bundle);
@@ -251,14 +239,14 @@ public class BluetoothCommunication {
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BluetoothConstants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(ReSightMainActivity.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
-        BluetoothCommunication.this.start();
+        BluetoothSensorService.this.start();
     }
 
     /**
@@ -266,14 +254,14 @@ public class BluetoothCommunication {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(ReSightMainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BluetoothConstants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(ReSightMainActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
-        BluetoothCommunication.this.start();
+        BluetoothSensorService.this.start();
     }
 
     /**
@@ -295,10 +283,8 @@ public class BluetoothCommunication {
                 if (secure) {
                     tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
                             MY_UUID_SECURE);
-                } else {
-                    tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(
-                            NAME_INSECURE, MY_UUID_INSECURE);
                 }
+                // TODO: 2017-04-27 if insecure 
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
             }
@@ -325,7 +311,7 @@ public class BluetoothCommunication {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BluetoothCommunication.this) {
+                    synchronized (BluetoothSensorService.this) {
                         switch (mState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
@@ -420,7 +406,7 @@ public class BluetoothCommunication {
             }
 
             // Reset the ConnectThread because we're done
-            synchronized (BluetoothCommunication.this) {
+            synchronized (BluetoothSensorService.this) {
                 mConnectThread = null;
             }
 
@@ -480,12 +466,11 @@ public class BluetoothCommunication {
                 try {
 
                     bytes = mmInStream.read(buffer);
-                    mHandler.obtainMessage(ReSightMainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
                     byte id;
                     for(int i=0; i<bytes ; i++){
-
 
                         if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
                             id = (byte)buffer[i+2];
@@ -509,7 +494,7 @@ public class BluetoothCommunication {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     // Start the service over to restart listening mode
-                    BluetoothCommunication.this.start();
+                    BluetoothSensorService.this.start();
                     break;
                 }
             }
@@ -525,7 +510,7 @@ public class BluetoothCommunication {
                // Log.d("데이터쓴다", String.valueOf(buffer));
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(ReSightMainActivity.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
 
             } catch (IOException e) {
