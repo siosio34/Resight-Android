@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Activity;
+package com.dragon4.owo.resight_android.View.Activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -17,10 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.adapter.BluetoothListAdapter;
+import com.dragon4.owo.resight_android.View.adapter.BluetoothListAdapter;
 import com.zcw.togglebutton.ToggleButton;
 
-import java.util.List;
 import java.util.Set;
 
 public class BluetoothSearchActivity extends AppCompatActivity {

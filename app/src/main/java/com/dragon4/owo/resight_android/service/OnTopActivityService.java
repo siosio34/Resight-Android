@@ -13,7 +13,7 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.dragon4.owo.resight_android.Fragment.CustomMizeAppSelectFragment;
+import com.dragon4.owo.resight_android.View.Fragment.CustomMizeAppSelectFragment;
 
 public class OnTopActivityService extends Service {
 

@@ -24,10 +24,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.BluetoothSearchActivity"
+            android:name=".View.Activity.BluetoothSearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.ReSightMainActivity"
+            android:name=".View.Activity.ReSightMainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -38,7 +38,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".Activity.CustomizeDialogActivity"
+            android:name=".View.Activity.CustomizeDialogActivity"
             android:theme="@android:style/Theme.Translucent"
 
            />

@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Activity;
+package com.dragon4.owo.resight_android.View.Activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -21,9 +21,9 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.dragon4.owo.resight_android.util.BluetoothConstants;
 import com.dragon4.owo.resight_android.util.BluetoothHandService;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
-import com.dragon4.owo.resight_android.Fragment.CustomMizeFragment;
-import com.dragon4.owo.resight_android.Fragment.MarketFragment;
-import com.dragon4.owo.resight_android.Fragment.MonitoringFragment;
+import com.dragon4.owo.resight_android.View.Fragment.CustomMizeFragment;
+import com.dragon4.owo.resight_android.View.Fragment.MarketFragment;
+import com.dragon4.owo.resight_android.View.Fragment.MonitoringFragment;
 import com.dragon4.owo.resight_android.R;
 import com.tsengvn.typekit.TypekitContextWrapper;
 

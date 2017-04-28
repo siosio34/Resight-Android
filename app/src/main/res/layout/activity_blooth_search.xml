@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/blooth_constraintLayout"
-    tools:context="com.dragon4.owo.resight_android.Activity.BluetoothSearchActivity"
+    tools:context=".View.Activity.BluetoothSearchActivity"
     android:background="@color/colorPrimary">
 
     <View

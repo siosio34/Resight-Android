@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
+import com.dragon4.owo.resight_android.View.Activity.ReSightMainActivity;
 import com.dragon4.owo.resight_android.Model.SensorData;
 
 import java.io.IOException;

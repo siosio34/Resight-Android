@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Fragment;
+package com.dragon4.owo.resight_android.View.Fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;

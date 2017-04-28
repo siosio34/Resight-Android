@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Fragment;
+package com.dragon4.owo.resight_android.View.Fragment;
 
 import android.content.ComponentName;
 import android.content.Context;

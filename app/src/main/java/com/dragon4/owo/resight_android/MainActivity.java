@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.Activity.ReSightMainActivity;
+import com.dragon4.owo.resight_android.View.Activity.ReSightMainActivity;
 
 import java.util.List;
 
