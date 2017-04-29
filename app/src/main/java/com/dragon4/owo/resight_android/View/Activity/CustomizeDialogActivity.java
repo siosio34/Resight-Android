@@ -16,6 +16,8 @@ public class CustomizeDialogActivity extends Activity {
     private static final String TAG = "CustomizeDialogActivity";
     ImageView imageView;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

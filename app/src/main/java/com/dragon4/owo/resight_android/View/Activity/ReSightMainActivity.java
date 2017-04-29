@@ -33,7 +33,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private static final int REQUEST_SETTING = 8010;
     private static final int REQUEST_ENABLE_BT = 8011;
 
-
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
     private static final String TAG = "ReSightMainActivity";
@@ -53,6 +52,8 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private BluetoothSensorService mSensorService = null;
 
     Toolbar toolbar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

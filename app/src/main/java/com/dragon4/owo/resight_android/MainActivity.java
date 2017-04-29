@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.dragon4.owo.resight_android.View.Activity.ReSightMainActivity;
+import com.dragon4.owo.resight_android.View.Activity.TutorialActivity1;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.List;
 
@@ -22,19 +24,25 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String TAG = "MainActivity";
 
     private static final int RC_LOCATION_REQUEST_PERM = 8001;
+    private boolean bluetoothSetFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        boolean flag = false;
+        Intent intent;
+
         //
         requestBloothPermission();
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -57,7 +65,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void moveSearchBloothActivity() {
-        Intent intent = new Intent(getApplicationContext(),ReSightMainActivity.class);
+        Intent intent = null;
+        if (bluetoothSetFlag) {
+            intent = new Intent(getApplicationContext(), ReSightMainActivity.class);
+        } else {
+            intent = new Intent(getApplicationContext(), TutorialActivity1.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

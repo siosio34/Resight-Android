@@ -18,9 +18,12 @@ import android.widget.Toast;
 
 import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.View.adapter.BluetoothListAdapter;
+import com.tsengvn.typekit.TypekitContextWrapper;
 import com.zcw.togglebutton.ToggleButton;
 
 import java.util.Set;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BluetoothSearchActivity extends AppCompatActivity {
 
@@ -138,6 +141,11 @@ public class BluetoothSearchActivity extends AppCompatActivity {
         requestRecentParingBluetoothDevice();
         requestBluetoothDeviceList();
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     private void requestRecentParingBluetoothDevice() {

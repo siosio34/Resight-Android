@@ -31,7 +31,6 @@
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
 
-
         <service
             android:name=".service.OnTopActivityService"
             android:enabled="true"
@@ -39,9 +38,16 @@
 
         <activity
             android:name=".View.Activity.CustomizeDialogActivity"
-            android:theme="@android:style/Theme.Translucent"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name=".View.Activity.TutorialActivity1"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:name=".View.Activity.TutorialActivity2"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
 
-           />
     </application>
 
 </manifest>
