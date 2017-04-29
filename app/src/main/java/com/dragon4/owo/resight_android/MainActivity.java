@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String TAG = "MainActivity";
 
     private static final int RC_LOCATION_REQUEST_PERM = 8001;
-    private boolean bluetoothSetFlag = false;
+    private boolean bluetoothSetFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
