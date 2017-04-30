@@ -23,7 +23,6 @@ import com.zcw.togglebutton.ToggleButton;
 
 import java.util.Set;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BluetoothSearchActivity extends AppCompatActivity {
 
