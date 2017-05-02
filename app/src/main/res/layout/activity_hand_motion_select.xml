@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity">
+    tools:context="com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity"
+    android:background="#f2f2f2"
+    >
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar2"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
       >
 
     <ImageView
@@ -29,12 +29,13 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+
          />
 
 </android.support.constraint.ConstraintLayout>

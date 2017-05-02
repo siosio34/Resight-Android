@@ -46,8 +46,6 @@ public class TestTrainModeMainFragment extends Fragment {
         final View testModeBottomView = rootView.findViewById(R.id.test_mode_button_bottom);
         final View trainModeBottomView = rootView.findViewById(R.id.train_mode_button_bottom);
 
-
-
         testModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

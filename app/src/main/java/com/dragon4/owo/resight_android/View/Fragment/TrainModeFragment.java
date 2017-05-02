@@ -1,5 +1,6 @@
 package com.dragon4.owo.resight_android.View.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -155,10 +156,25 @@ public class TrainModeFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("TrainMode","클릭됨");
                 Intent intent = new Intent(getActivity(), HandMotionSelectActivity.class);
-                startActivityForResult(intent,REQUEST_HAND_MOTOTION);
+               startActivityForResult(intent,REQUEST_HAND_MOTOTION);
             }
         });
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("codetest", "들어오니");
+        if (requestCode == REQUEST_HAND_MOTOTION) {
+            Log.d("codetest", "들어오느니");
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d("codetest", "들어오느니리이");
+                String test = data.getStringExtra("handCode");
+                Log.d("codetest", test);
+            }
+        }
+    }
+
 
 
 }

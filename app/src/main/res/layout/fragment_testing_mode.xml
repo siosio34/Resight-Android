@@ -153,7 +153,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
-             />
+            />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/sensor_graph1"
@@ -177,7 +177,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
-             />
+            />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/sensor_graph3"
@@ -189,7 +189,7 @@
             android:layout_marginTop="5dp"
             app:layout_constraintTop_toTopOf="parent"
 
-           />
+            />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/sensor_graph4"
@@ -216,4 +216,3 @@
 
 
 </android.support.constraint.ConstraintLayout>
-
