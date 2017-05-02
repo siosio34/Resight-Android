@@ -54,8 +54,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     Toolbar toolbar;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

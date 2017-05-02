@@ -41,13 +41,14 @@
             android:theme="@android:style/Theme.Translucent" />
         <activity
             android:name=".View.Activity.TutorialActivity1"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.Activity.TutorialActivity2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.Activity.HandMotionSelectActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
-
     </application>
 
 </manifest>

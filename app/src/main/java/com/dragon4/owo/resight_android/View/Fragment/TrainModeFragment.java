@@ -1,6 +1,7 @@
 package com.dragon4.owo.resight_android.View.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.dragon4.owo.resight_android.R;
+import com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -33,6 +36,8 @@ public class TrainModeFragment extends Fragment {
     private ViewGroup rootView;
     private RadarChart mSensorChart;
 
+    private final int REQUEST_HAND_MOTOTION = 9997;
+
 
     public TrainModeFragment() {
 
@@ -44,6 +49,7 @@ public class TrainModeFragment extends Fragment {
         Log.d("TestModeFragment", "OncreateView 호출됨");
         rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_traing_mode, container, false);
         initRaderChart();
+        registHandSelectButton();
         return rootView;
     }
 
@@ -140,6 +146,18 @@ public class TrainModeFragment extends Fragment {
 
         mSensorChart.setData(data);
         mSensorChart.invalidate();
+    }
+
+    private void registHandSelectButton() {
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.motion_setting_button);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TrainMode","클릭됨");
+                Intent intent = new Intent(getActivity(), HandMotionSelectActivity.class);
+                startActivityForResult(intent,REQUEST_HAND_MOTOTION);
+            }
+        });
     }
 
 
