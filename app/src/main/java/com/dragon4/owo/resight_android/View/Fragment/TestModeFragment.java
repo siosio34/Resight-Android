@@ -1,5 +1,6 @@
 package com.dragon4.owo.resight_android.View.Fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
@@ -21,7 +23,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
  * Created by joyeongje on 2017. 3. 19..
  */
 
-public class MonitoringFragment extends Fragment {
+public class TestModeFragment extends Fragment {
 
     private final Handler mHanler = new Handler();
     private Runnable mTimer;
@@ -34,21 +36,23 @@ public class MonitoringFragment extends Fragment {
     private String deviceID;
     private SensorData sensorData;
 
-    public MonitoringFragment() {
+    private ViewGroup rootView;
+
+    public TestModeFragment() {
 
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("test", "OncreateView 호출됨");
-        ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_monitoring, container, false);
+        Log.d("TestModeFragment", "OncreateView 호출됨");
+        rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_testing_mode, container, false);
         //GraphView graphView = (GraphView) rootView.findViewById(R.id.sensor_graph0);
-        initGraph(rootView);
+        initGraph();
         return rootView;
     }
 
-    private void initGraph(ViewGroup rootView) {
+    private void initGraph() {
         graphViewArrays = new GraphView[6];
         graphSeriesArrays = new LineGraphSeries[6];
 
@@ -73,8 +77,9 @@ public class MonitoringFragment extends Fragment {
             graphSeriesArrays[i] = new LineGraphSeries<>();
             graphViewArrays[i].addSeries(graphSeriesArrays[i]);
         }
-
     }
+
+
 
     public void onResume() {
         super.onResume();
@@ -97,9 +102,8 @@ public class MonitoringFragment extends Fragment {
         mHanler.removeCallbacks(mTimer);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_resight_main, menu);
-    }
+
+
+
 
 }

@@ -18,12 +18,13 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.dragon4.owo.resight_android.View.Fragment.TestTrainModeMainFragment;
 import com.dragon4.owo.resight_android.util.BluetoothConstants;
 import com.dragon4.owo.resight_android.util.BluetoothHandService;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
 import com.dragon4.owo.resight_android.View.Fragment.CustomMizeFragment;
 import com.dragon4.owo.resight_android.View.Fragment.MarketFragment;
-import com.dragon4.owo.resight_android.View.Fragment.MonitoringFragment;
+import com.dragon4.owo.resight_android.View.Fragment.TestModeFragment;
 import com.dragon4.owo.resight_android.R;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -44,7 +45,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
 
-    private MonitoringFragment monitoringFragment;
+    private TestTrainModeMainFragment monitoringFragment;
     private CustomMizeFragment customizeFragment;
     private MarketFragment     marketFragment;
 
@@ -114,7 +115,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     }
 
     private void initFragment() {
-        monitoringFragment = new MonitoringFragment();
+        monitoringFragment = new TestTrainModeMainFragment();
         customizeFragment = new CustomMizeFragment();
         marketFragment = new MarketFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container,monitoringFragment).commit();
@@ -371,5 +372,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
      //   mChatService.connect(device, secure);
 
     }
+
+
 
 }

@@ -18,34 +18,28 @@ import com.dragon4.owo.resight_android.R;
 
 public class CustomMizeFragment extends Fragment {
 
-    private Fragment fragment;
+    Fragment fragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("test", "OncreateView 호출됨");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_customize,container,false);
-
-        registerFloatingButton(rootView);
+        registFloatingButton(rootView);
         return rootView;
     }
 
-    private void registerFloatingButton(ViewGroup rootView) {
+    private void registFloatingButton(ViewGroup rootView) {
         FloatingActionButton customFloatingButton;
         customFloatingButton = (FloatingActionButton)rootView.findViewById(R.id.custom_add_button);
+        fragment = new CustomMizeAppSelectFragment();
         customFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Toast.makeText(getActivity(),"CustomMizeFragmen float button",Toast.LENGTH_SHORT).show();
-                customAppSelectedFragment();
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.custom_mize_fragment_layout, fragment).commit();
             }
         });
     }
 
-    private void customAppSelectedFragment() {
-        fragment = new CustomMizeAppSelectFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.custom_mize_fragment_layout,fragment).commit();
-    }
 
 }

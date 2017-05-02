@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/train_mode_fragment"
+    android:background="#F2F2F2">
+
+    <TextView
+        android:id="@+id/setting_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="설정 동작"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/motion_setting_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/icon_plus_button"
+        app:layout_constraintTop_toBottomOf="@+id/setting_textview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"
+        />
+
+    <View
+        android:id="@+id/train_view_guide"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/motion_setting_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="12.5dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:background="#95989A"/>
+
+    <TextView
+        android:id="@+id/learningnunm_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="학습횟수"
+        app:layout_constraintTop_toBottomOf="@+id/train_view_guide"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="15"
+        app:layout_constraintTop_toBottomOf="@+id/learningnunm_textview"
+        app:layout_constraintLeft_toLeftOf="@+id/learningnunm_textview"
+        app:layout_constraintRight_toRightOf="@+id/learningnunm_textview"
+
+        />
+
+    <TextView
+        android:id="@+id/precesion_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="정확도"
+        app:layout_constraintTop_toBottomOf="@+id/train_view_guide"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="98%"
+        app:layout_constraintTop_toBottomOf="@+id/precesion_textview"
+        app:layout_constraintLeft_toLeftOf="@+id/precesion_textview"
+        app:layout_constraintRight_toRightOf="@+id/precesion_textview"
+        />
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/train_view_guide"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/icon_play"
+        android:layout_marginTop="13.5dp"
+        />
+
+    <View
+        android:id="@+id/train_view_guide_bottom"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/train_view_guide"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:background="#95989A"/>
+
+    <TextView
+        android:id="@+id/train_state_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/train_view_guide_bottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="20sp"
+        android:text="초기 설정중 ..."
+        android:layout_marginTop="10dp"
+        />
+
+    <View
+        android:id="@+id/train_state_textview_bottom"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/train_state_textview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10.5dp"
+        android:layout_marginLeft="81dp"
+        android:layout_marginRight="81dp"
+        android:background="#95989A"
+       />
+
+    <com.github.mikephil.charting.charts.RadarChart
+        android:id="@+id/sensor_rader_chartview"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        app:layout_constraintTop_toBottomOf="@+id/train_state_textview_bottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        />
+
+    <View
+        android:id="@+id/sensor_rader_chartview_bottom_view"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_rader_chartview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#95989A"
+        />
+
+    <Button
+        android:layout_width="75dp"
+        android:layout_height="35dp"
+        android:text="동기화"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:background="#595959"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_rader_chartview_bottom_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        />
+
+    <TextView
+        android:id="@+id/train_compare_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_rader_chartview_bottom_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginStart="130dp"
+        android:text="처음 동작과의 유사율 : "
+        />
+
+    <TextView
+        android:id="@+id/train_compare_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="70%"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_rader_chartview_bottom_view"
+        app:layout_constraintLeft_toRightOf="@+id/train_compare_textview"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginStart="3dp"
+        />
+
+</android.support.constraint.ConstraintLayout>

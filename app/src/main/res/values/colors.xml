@@ -5,4 +5,11 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorBottomNavigation">#ACACAC</color>
     <color name="colorBloothMenu">#FFFFFF</color>
+
+
+    <!--  test and train mode bottom Button -->
+
+    <color name="colorTestModeButtonBottom">#595959</color>
+    <color name="colorTrainModeButtonBottom">#ACACAC</color>
+
 </resources>
