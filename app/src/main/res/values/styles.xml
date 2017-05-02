@@ -8,9 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextAppearance.FontPath" parent="android:TextAppearance">
-        <item name="fontPath">fonts/NanumBarunpenR.ttf</item>
-    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
