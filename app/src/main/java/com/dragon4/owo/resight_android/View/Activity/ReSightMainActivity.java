@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.dragon4.owo.resight_android.View.Fragment.TestTrainModeMainFragment;
+import com.dragon4.owo.resight_android.util.ActivityResultEvent;
 import com.dragon4.owo.resight_android.util.BluetoothConstants;
 import com.dragon4.owo.resight_android.util.BluetoothHandService;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
@@ -26,7 +28,13 @@ import com.dragon4.owo.resight_android.View.Fragment.CustomMizeFragment;
 import com.dragon4.owo.resight_android.View.Fragment.MarketFragment;
 import com.dragon4.owo.resight_android.View.Fragment.TestModeFragment;
 import com.dragon4.owo.resight_android.R;
+import com.dragon4.owo.resight_android.util.GlobalBus;
+import com.dragon4.owo.resight_android.util.MessageEvent;
 import com.tsengvn.typekit.TypekitContextWrapper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class ReSightMainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
@@ -330,8 +338,10 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
       //  }
     }
 
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult " + resultCode);
+        EventBus.getDefault().post(new ActivityResultEvent(requestCode, resultCode, data));
 
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE:

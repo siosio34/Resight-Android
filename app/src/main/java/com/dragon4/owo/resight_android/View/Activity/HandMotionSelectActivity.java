@@ -16,6 +16,8 @@ import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.View.adapter.HandMotionAdapter;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 public class HandMotionSelectActivity extends AppCompatActivity {
@@ -24,7 +26,6 @@ public class HandMotionSelectActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<HandMotion> myDataset;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class HandMotionSelectActivity extends AppCompatActivity {
         myDataset.add(new HandMotion("동작 : 손펴기", R.drawable.icon_hand00_open,"00"));
         myDataset.add(new HandMotion("동작 : 주먹쥐기", R.drawable.icon_hand01_closed,"01"));
         myDataset.add(new HandMotion("동작 : 손가락접기", R.drawable.icon_hand02_finger_closed,"02"));
-
     }
+
 
     private void initHandMotionToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
@@ -67,5 +68,7 @@ public class HandMotionSelectActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
+
+
 
 }

@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.dragon4.owo.resight_android.Model.HandMotion;
 import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity;
+import com.dragon4.owo.resight_android.util.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -82,10 +85,13 @@ public class HandMotionAdapter extends RecyclerView.Adapter<HandMotionAdapter.Vi
                 // TODO: 2017-05-03 손 선택한거 동작 처리마저해야됨
                 selectHandMotionIntent.putExtra("handCode",mDataset.get(position).handCode);
                 selectHandMotionIntent.putExtra("handImage",mDataset.get(position).handImg);
+                EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
                 ((HandMotionSelectActivity)handMotionCtx).setResult(9997,selectHandMotionIntent);
                 ((HandMotionSelectActivity)handMotionCtx).finish();
+
             }
         });
+
     }
 
     @Override

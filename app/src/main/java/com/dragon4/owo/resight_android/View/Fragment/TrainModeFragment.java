@@ -13,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity;
+import com.dragon4.owo.resight_android.util.ActivityResultEvent;
+import com.dragon4.owo.resight_android.util.MessageEvent;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -29,6 +32,10 @@ import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.github.mikephil.charting.renderer.RadarChartRenderer;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -52,6 +59,31 @@ public class TrainModeFragment extends Fragment {
         initRaderChart();
         registHandSelectButton();
         return rootView;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onMessageEvent(MessageEvent event) {
+        Log.d("ㅇ",event.message);
+        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Subscribe
+    public void onMessageEvent(ActivityResultEvent event) {
+        Log.d("ㅇd",String.valueOf(event.getRequestCode()));
+        //Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
     }
 
     void initRaderChart() {
@@ -156,7 +188,7 @@ public class TrainModeFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("TrainMode","클릭됨");
                 Intent intent = new Intent(getActivity(), HandMotionSelectActivity.class);
-               startActivityForResult(intent,REQUEST_HAND_MOTOTION);
+                getActivity().startActivityForResult(intent,REQUEST_HAND_MOTOTION);
             }
         });
     }
@@ -174,6 +206,19 @@ public class TrainModeFragment extends Fragment {
             }
         }
     }
+
+    public void onEvent(ActivityResultEvent event) {
+        Log.d("haint", "Message from MainActivity via EvenBus: request code = " + event.getRequestCode());
+    };
+
+
+
+
+    // This method will be called when a SomeOtherEvent is posted
+  //  @Subscribe
+  //  public void handleSomethingElse(SomeOtherEvent event) {
+  //      doSomethingWith(event);
+  //  }
 
 
 
