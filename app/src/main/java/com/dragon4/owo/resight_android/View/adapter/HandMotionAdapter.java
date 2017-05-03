@@ -86,7 +86,7 @@ public class HandMotionAdapter extends RecyclerView.Adapter<HandMotionAdapter.Vi
                 selectHandMotionIntent.putExtra("handCode",mDataset.get(position).handCode);
                 selectHandMotionIntent.putExtra("handImage",mDataset.get(position).handImg);
                 EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
-                ((HandMotionSelectActivity)handMotionCtx).setResult(9997,selectHandMotionIntent);
+                ((HandMotionSelectActivity)handMotionCtx).setResult(RESULT_OK,selectHandMotionIntent);
                 ((HandMotionSelectActivity)handMotionCtx).finish();
 
 

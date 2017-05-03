@@ -45,7 +45,7 @@ public class TrainModeFragment extends Fragment {
     private RadarChart mSensorChart;
 
     private final int REQUEST_HAND_MOTOTION = 9997;
-
+    private ImageView imageView;
 
     public TrainModeFragment() {
 
@@ -71,15 +71,24 @@ public class TrainModeFragment extends Fragment {
     @Override
     public void onDestroy() {
       //  EventBus.getDefault().unregister(this);
-        Log.d("ㅇD","STOP");
+        Log.d("ㅇD","onDestroy");
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
     @Subscribe
-    public void handleSomethingElse(ActivityResultEvent activityResultEvent) {
-        Log.d("ㅇ",String.valueOf(activityResultEvent.getRequestCode()));
-        Toast.makeText(getActivity(),String.valueOf(activityResultEvent.getRequestCode()),Toast.LENGTH_SHORT).show();
+    public void framgmentOnActivityResult(ActivityResultEvent activityResultEvent) {
+        int requestCode = activityResultEvent.getRequestCode();
+        int resultCode = activityResultEvent.getResultCode();
+        Intent data = activityResultEvent.getData();
+
+        if (requestCode == REQUEST_HAND_MOTOTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                String test = data.getStringExtra("handCode");
+                int imageID = data.getIntExtra("handImage",R.drawable.icon_hand00_open);
+                imageView.setImageResource(imageID);
+            }
+        }
     }
 
   //  @Subscribe
@@ -178,7 +187,7 @@ public class TrainModeFragment extends Fragment {
     }
 
     private void registHandSelectButton() {
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.motion_setting_button);
+        imageView = (ImageView) rootView.findViewById(R.id.motion_setting_button);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,22 +197,6 @@ public class TrainModeFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("codetest", "들어오니");
-        if (requestCode == REQUEST_HAND_MOTOTION) {
-            Log.d("codetest", "들어오느니");
-            if (resultCode == Activity.RESULT_OK) {
-                Log.d("codetest", "들어오느니리이");
-                String test = data.getStringExtra("handCode");
-                Log.d("codetest", test);
-            }
-        }
-    }
-
-
 
     // This method will be called when a SomeOtherEvent is posted
   //  @Subscribe
