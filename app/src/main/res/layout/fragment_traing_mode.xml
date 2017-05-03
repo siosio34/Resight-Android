@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/motion_setting_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="12.5dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:background="#95989A"/>
@@ -162,7 +162,7 @@
         android:background="#595959"
         app:layout_constraintTop_toBottomOf="@+id/sensor_rader_chartview_bottom_view"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         />
