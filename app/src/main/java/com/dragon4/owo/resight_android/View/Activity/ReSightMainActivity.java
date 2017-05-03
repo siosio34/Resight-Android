@@ -350,7 +350,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 }
                 break;
             case REQUEST_SETTING:
-
                 if(resultCode == Activity.RESULT_OK) {
                     // 셋팅 관련 내용
                 }

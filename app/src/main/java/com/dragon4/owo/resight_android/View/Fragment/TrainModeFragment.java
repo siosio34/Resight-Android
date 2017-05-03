@@ -58,44 +58,40 @@ public class TrainModeFragment extends Fragment {
         rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_traing_mode, container, false);
         initRaderChart();
         registHandSelectButton();
+        EventBus.getDefault().register(this);
         return rootView;
     }
-
 
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        Log.d("ㅇD","START");
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
+      //  EventBus.getDefault().unregister(this);
+        Log.d("ㅇD","STOP");
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onDestroy();
     }
 
     @Subscribe
-    public void onMessageEvent(MessageEvent event) {
-        Log.d("ㅇ",event.message);
-        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
+    public void handleSomethingElse(ActivityResultEvent activityResultEvent) {
+        Log.d("ㅇ",String.valueOf(activityResultEvent.getRequestCode()));
+        Toast.makeText(getActivity(),String.valueOf(activityResultEvent.getRequestCode()),Toast.LENGTH_SHORT).show();
     }
 
-    @Subscribe
-    public void onMessageEvent(ActivityResultEvent event) {
-        Log.d("ㅇd",String.valueOf(event.getRequestCode()));
-        //Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
-    }
+  //  @Subscribe
+  //  public void onMessageEvent(ActivityResultEvent event) {
+  //      Log.d("ㅇd",String.valueOf(event.getRequestCode()));
+  //      //Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
+  //  }
 
     void initRaderChart() {
         mSensorChart =(RadarChart) rootView.findViewById(R.id.sensor_rader_chartview);
-
-
         mSensorChart.setBackgroundColor(Color.rgb(60, 65, 82));
-
-
         mSensorChart.getDescription().setEnabled(false);
-
-
         mSensorChart.setWebLineWidth(1f);
         mSensorChart.setWebColor(Color.LTGRAY);
         mSensorChart.setWebLineWidthInner(1f);
@@ -206,11 +202,6 @@ public class TrainModeFragment extends Fragment {
             }
         }
     }
-
-    public void onEvent(ActivityResultEvent event) {
-        Log.d("haint", "Message from MainActivity via EvenBus: request code = " + event.getRequestCode());
-    };
-
 
 
 

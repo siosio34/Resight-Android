@@ -89,6 +89,7 @@ public class HandMotionAdapter extends RecyclerView.Adapter<HandMotionAdapter.Vi
                 ((HandMotionSelectActivity)handMotionCtx).setResult(9997,selectHandMotionIntent);
                 ((HandMotionSelectActivity)handMotionCtx).finish();
 
+
             }
         });
 
