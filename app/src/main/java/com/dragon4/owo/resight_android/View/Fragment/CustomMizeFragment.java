@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.dragon4.owo.resight_android.R;
 
@@ -29,8 +30,8 @@ public class CustomMizeFragment extends Fragment {
     }
 
     private void registFloatingButton(ViewGroup rootView) {
-        FloatingActionButton customFloatingButton;
-        customFloatingButton = (FloatingActionButton)rootView.findViewById(R.id.custom_add_button);
+        ImageView customFloatingButton;
+        customFloatingButton = (ImageView)rootView.findViewById(R.id.icon_cutomize_app_addbutton);
         fragment = new CustomMizeAppSelectFragment();
         customFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override

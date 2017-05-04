@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -14,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.dragon4.owo.resight_android.View.Fragment.CustomMizeAppSelectFragment;
+
+import static android.view.Gravity.CENTER;
 
 public class OnTopActivityService extends Service {
 
@@ -36,11 +39,7 @@ public class OnTopActivityService extends Service {
                     Log.d("눌린좌표",START_X + " : "+ START_Y);
 
                     //appCtx.stopService(new Intent(appCtx,OnTopActivityService.class));
-
                     //stopService(new Intent(getCon, OnTopActivityService.class));
-
-
-                    //
 
                     //mWindowManager.updateViewLayout();
 
@@ -84,6 +83,7 @@ public class OnTopActivityService extends Service {
         textView.setText("의수동작과 매칭할 화면버튼클릭");
         textView.setTextColor(Color.GREEN);
         textView.setOnTouchListener(mViewTouchListener);
+        textView.setGravity(Gravity.CENTER);
 
         //textView.setGravity();
 
@@ -103,7 +103,6 @@ public class OnTopActivityService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d("ddddddd","hhhh");
         super.onDestroy();
         if (textView != null) {
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(textView);

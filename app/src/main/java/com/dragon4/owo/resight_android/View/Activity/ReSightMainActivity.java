@@ -142,7 +142,9 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             startActivityForResult(bluetoothMoveIntent, REQUEST_CONNECT_DEVICE);
             return true;
         } else if(id == R.id.action_settings) {
-            // 셋팅 관련 내용,
+
+            Intent settingMovieIntent = new Intent(ReSightMainActivity.this, SettingActivity.class);
+            startActivity(settingMovieIntent);
             return true; //
         }
 
@@ -240,27 +242,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             }
         }
     };
-
-   //   private void sendMessage(String message) {
-   //       // Check that we're actually connected before trying anything
-   //       if (mChatService.getState() != BluetoothSensorService.STATE_CONNECTED) {
-   //           Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
-   //           return;
-   //       }
-////
-   //       // Check that there's actually something to send
-   //       if (message.length() > 0) {
-   //           // Get the message bytes and tell the BluetoothChatService to write
-   //           byte[] send = message.getBytes();
-   //           mChatService.write(send);
-   //           Log.d("여기에들어옴","test");
-////
-   //           // Reset out string buffer to zero and clear the edit text field
-   //           mOutStringBuffer.setLength(0);
-   //           //     mOutEditText.setText(mOutStringBuffer);
-   //       }
-   //   }
-////
 
    private void sendMessage(String message) {
 

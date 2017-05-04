@@ -19,12 +19,15 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".View.Activity.BluetoothSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".View.Activity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.Activity.ReSightMainActivity"
