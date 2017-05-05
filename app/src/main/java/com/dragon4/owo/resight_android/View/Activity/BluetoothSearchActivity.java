@@ -41,6 +41,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                 if (bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mNewDevicesArrayAdapter.addBloothDeviceToList(bluetoothDevice);
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
+                    Log.d("새로운 기기목록.", bluetoothDevice.getName());
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) { // 검색이 끝났을때!
@@ -86,7 +87,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(bloothReceiver, filter);
-        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+      filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(bloothReceiver, filter);
     }
 
@@ -126,8 +127,9 @@ public class BluetoothSearchActivity extends AppCompatActivity {
     }
 
     private void initBluetoothDeviceList() {
-        mNewDevicesArrayAdapter = new BluetoothListAdapter();
+
         mBondedDevicesArrayAdapter = new BluetoothListAdapter();
+        mNewDevicesArrayAdapter = new BluetoothListAdapter();
 
         ListView bondedDevicesListView = (ListView) findViewById(R.id.blooth_list);
         bondedDevicesListView.setAdapter(mBondedDevicesArrayAdapter);
@@ -139,7 +141,6 @@ public class BluetoothSearchActivity extends AppCompatActivity {
 
         requestRecentParingBluetoothDevice();
         requestBluetoothDeviceList();
-
     }
 
     @Override
@@ -155,6 +156,8 @@ public class BluetoothSearchActivity extends AppCompatActivity {
         if (pairingDeviceSize > 0) {
             for (BluetoothDevice bluetoothDevice: pairededDevices) {
                 mBondedDevicesArrayAdapter.addBloothDeviceToList(bluetoothDevice);
+                mBondedDevicesArrayAdapter.notifyDataSetChanged();
+                Log.d("페어링된 기기목록...", bluetoothDevice.getName());
                 recentParingBloothDevice = bluetoothDevice;
             }
         }
@@ -162,7 +165,6 @@ public class BluetoothSearchActivity extends AppCompatActivity {
             recentParingTextView.setText("최근 페어링 : 없음");
         }
 
-        mBondedDevicesArrayAdapter.notifyDataSetChanged();
         recentParingTextView.setText("최근 페어링 : " + recentParingBloothDevice.getName());
         recentParingTextView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".View.Activity.BluetoothSearchActivity"
@@ -10,8 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/blooth_constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
     <View
         android:layout_width="0dp"
@@ -112,7 +112,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/resent_blooth_list_title"
-        android:layout_marginTop="7dp" />
+        android:layout_marginTop="7dp"
+        />
 
     <TextView
         android:id="@+id/new_blooth_list_title"
@@ -149,4 +150,5 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</ScrollView>
+</LinearLayout>
+

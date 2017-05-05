@@ -90,8 +90,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if ( mSensorService == null) {
-          //  mHandService = new BluetoothHandService(getApplicationContext(), mSensorHandler);
+        } else if (mSensorService == null) {
             mSensorService = new BluetoothSensorService(this, mSensorHandler);
         } else if (mHandService == null) {
             mHandService = new BluetoothHandService(this, mHandHandler);
@@ -295,13 +294,11 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             String temp = "a";
             int randNum = (int)(Math.random() * 100);
             String b = randNum > 50 ? "a" : "b";
-            Log.d("여기로ss",b);
             sendMessage(b);
 
-            Log.d("여기로","들어오나");
-
-            byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x10, (byte) 0xFE, (byte) 0xFE};
-            sendMessage2(buff);
+            byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
+            byte[] buff2 = {(byte) 0x11};
+            sendMessage2(buff2);
         }
     }
 
