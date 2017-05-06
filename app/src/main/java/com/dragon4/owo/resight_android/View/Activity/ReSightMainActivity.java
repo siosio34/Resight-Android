@@ -295,10 +295,12 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             int randNum = (int)(Math.random() * 100);
             String b = randNum > 50 ? "a" : "b";
             sendMessage(b);
-
-            byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
-            byte[] buff2 = {(byte) 0x11};
-            sendMessage2(buff2);
+            Log.d("ddddd","여기는??");
+//
+          //  byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
+          //  sendMessage2(buff);
+           byte[] buff2 = {(byte) 0x11};
+           sendMessage2(buff2);
         }
     }
 

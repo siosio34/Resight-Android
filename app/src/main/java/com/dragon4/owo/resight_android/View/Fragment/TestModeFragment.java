@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
@@ -29,6 +30,7 @@ public class TestModeFragment extends Fragment {
     private Runnable mTimer;
     private double xValue = 0d;
     private GraphView[] graphViewArrays;
+    private TextView[] textViews;
     private LineGraphSeries<DataPoint>[] graphSeriesArrays;
 
     int randNum;
@@ -49,6 +51,7 @@ public class TestModeFragment extends Fragment {
         rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_testing_mode, container, false);
         //GraphView graphView = (GraphView) rootView.findViewById(R.id.sensor_graph0);
         initGraph();
+        initTextView();
         return rootView;
     }
 
@@ -79,6 +82,17 @@ public class TestModeFragment extends Fragment {
         }
     }
 
+    private void initTextView() {
+        textViews = new TextView[6];
+
+        textViews[0] = (TextView) rootView.findViewById(R.id.sensor1);
+        textViews[1] = (TextView) rootView.findViewById(R.id.sensor2);
+        textViews[2] = (TextView) rootView.findViewById(R.id.sensor3);
+        textViews[3] = (TextView) rootView.findViewById(R.id.sensor4);
+        textViews[4] = (TextView) rootView.findViewById(R.id.sensor5);
+        textViews[5] = (TextView) rootView.findViewById(R.id.sensor6);
+
+    }
 
 
     public void onResume() {
@@ -90,6 +104,7 @@ public class TestModeFragment extends Fragment {
                 for (int i = 0; i < 6; i++) {
                     randNum = (int) ((Math.random() * 100) + 1);
                     graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), true, 40);
+                    textViews[i].setText(i + "번 : " + randNum);
                 }
                 mHanler.postDelayed(this,50); //
             }
