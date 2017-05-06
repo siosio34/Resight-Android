@@ -518,6 +518,32 @@ public class BluetoothHandService {
             }
         }
 
+        public void handControl(int code) {
+            String handCode = "cc";
+            // TODO: 2017-05-07 code 바꾸기 -> 하... 
+            switch (code) {
+                case 0:
+                    handCode = "cc";
+                    //mmOutStream.write("00");
+                    // 주먹쥐기
+                    break;
+                case 1:
+                    handCode = "dd";
+                    //mmOutStream.write("01");
+                    // 손펴기.
+                    break;
+                case 2:
+                    handCode = "cc";
+                   // mmOutStream.write("02");
+                    // 브이하기.
+                    break;
+                case 3:
+                    handCode = "dd";
+                    break;
+            }
+            mHandConnectedThread.write(handCode.getBytes());
+        }
+
         public void cancel() {
             try {
                 mmSocket.close();
@@ -526,4 +552,11 @@ public class BluetoothHandService {
             }
         }
     }
+
+    private void handControl() {
+
+
+
+    }
+
 }

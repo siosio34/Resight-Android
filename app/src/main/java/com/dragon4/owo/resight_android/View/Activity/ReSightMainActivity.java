@@ -252,6 +252,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
            // Get the message bytes and tell the BluetoothHandService to write
            byte[] send = message.getBytes();
            mHandService.write(send);
+
            // Reset out string buffer to zero and clear the edit text field
            //mOutStringBuffer.setLength(0);
       //     mOutHandBuffer.setLength(0);

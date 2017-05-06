@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.dragon4.owo.resight_android.Model.SensorData;
 import com.dragon4.owo.resight_android.R;
+import com.dragon4.owo.resight_android.util.BluetoothSensorService;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -68,7 +69,7 @@ public class TestModeFragment extends Fragment {
 
         for (int i = 0; i < 6; i++) {
             graphViewArrays[i].getViewport().setMinY(0);
-            graphViewArrays[i].getViewport().setMaxY(100);
+            graphViewArrays[i].getViewport().setMaxY(300);
             graphViewArrays[i].getViewport().setYAxisBoundsManual(true);
 
             graphViewArrays[i].getViewport().setMinX(0);
@@ -79,6 +80,7 @@ public class TestModeFragment extends Fragment {
 
             graphSeriesArrays[i] = new LineGraphSeries<>();
             graphViewArrays[i].addSeries(graphSeriesArrays[i]);
+
         }
     }
 
@@ -94,7 +96,6 @@ public class TestModeFragment extends Fragment {
 
     }
 
-
     public void onResume() {
         super.onResume();
         mTimer = new Runnable() {
@@ -102,16 +103,18 @@ public class TestModeFragment extends Fragment {
             public void run() {
                 xValue += 1d;
                 for (int i = 0; i < 6; i++) {
-                    randNum = (int) ((Math.random() * 100) + 1);
-                    graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), true, 40);
-                    textViews[i].setText(i + "번 : " + randNum);
-                    // TODO: 2017-05-06 리사이트와연동.
+                    //randNum = (int) ((Math.random() * 100) + 1);
+                    graphSeriesArrays[i].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[i]), true, 40);
+                    textViews[i].setText((i+1) + "번 : " + BluetoothSensorService.sensorsData[i]);
+
                 }
                 mHanler.postDelayed(this,50); //
             }
         };
         mHanler.postDelayed(mTimer, 1000); //
     }
+
+
 
     public void onPause() {
         super.onPause();

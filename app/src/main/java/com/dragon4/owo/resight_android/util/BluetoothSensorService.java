@@ -28,6 +28,8 @@ public class BluetoothSensorService {
     ReSightMainActivity _context;
 
     public static int sensorsData[] = new int[6];
+    private int newSensorsData[] = new int[6];
+    private final int sensorNum = 6;
 
     // Debugging
     private static final String TAG = "BluetoothSensorService";
@@ -451,47 +453,73 @@ public class BluetoothSensorService {
         public void run() {
             Log.i(TAG, "BEGIN mSensorConnectedThread");
             byte[] buffer = new byte[26];
+            boolean firstLoadSensor = false;
 
             int bytes;
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     bytes = mmInStream.read(buffer);
                     // 여기서 testmode fragment 나
                     mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+
                     //Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-                    Log.d("sensor Data1",String.valueOf(buffer[0]));
-                    Log.d("sensor Data2",String.valueOf(buffer[1]));
-                    Log.d("sensor Data3",String.valueOf(buffer[24]));
-                    Log.d("sensor Data4",String.valueOf(buffer[25]));
-                    sensorsData[0] = (byte) 0xFE;
-                    sensorsData[1] = (byte) 0xFF;
+                  //  Log.d("sensor Data1",String.valueOf(buffer[0]));
+                  //  Log.d("sensor Data2",String.valueOf(buffer[1]));
+                  //  Log.d("sensor Data3",String.valueOf(buffer[24]));
+                  //  Log.d("sensor Data4",String.valueOf(buffer[25]));
+                  //  sensorsData[0] = (byte) 0xFE;
+                //    sensorsData[1] = (byte) 0xFF;
 
-                    Log.d("0xFE",String.valueOf(sensorsData[0]));
-                    Log.d("0xFF",String.valueOf(sensorsData[1]));
+                //    Log.d("0xFE",String.valueOf(sensorsData[0]));
+                //    Log.d("0xFF",String.valueOf(sensorsData[1]));
 
-                  // //   TODO: 2017-04-28 통신 로직 센서값 buffer) 다시 코딩.
-                  //  for(int k = 0 ; k < 6 ; k++) {
-                  //      sensorsData[k] = (int)buffer[k];
-                  //      Log.d("sensor Data",String.valueOf(sensorsData[k]));
-                  //  }
                      byte id;
                     if(((byte)buffer[0] == (byte)0xFF&& (byte)buffer[1]  == (byte)0xFF && buffer[3] == (byte)0x11  && buffer[4] == (byte)0x02 & buffer[22] == (byte)0x02 && buffer[24] == (byte)0xFE && (byte)buffer[25] == (byte)0xFE)){
                         // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
 
-                      //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-                      //  Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-                      //  Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+                    //    Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+                    //    Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+                    //    Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
 
-                        sensorsData[0] = bytoHexToInteger(buffer[5]);
-                        sensorsData[1] = bytoHexToInteger(buffer[7]);
-                        sensorsData[2] = bytoHexToInteger(buffer[9]);
-                        sensorsData[3] = bytoHexToInteger(buffer[11]);
-                        sensorsData[4] = bytoHexToInteger(buffer[13]);
-                        sensorsData[5] = bytoHexToInteger(buffer[15]);
+                        if(!firstLoadSensor) {
+                            for (int i = 0; i < 6; i++) {
+                                sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+                                //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
+                            }
+                            firstLoadSensor = true;
+                          //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
 
+                         //   isForcedSensor(sensorsData, newSensorsData);
+
+                        } else {
+                            Log.d("여기에 들어왔소", "갹");
+                            for (int i = 0; i < 6; i++) {
+                                newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+                                //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
+                            }
+                            isForcedSensor(sensorsData, newSensorsData);
+                            System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+                        }
+
+                      //  sensorsData[0] = bytoHexToInteger(buffer[5]);
+                      //  sensorsData[1] = bytoHexToInteger(buffer[7]);
+                      //  sensorsData[2] = bytoHexToInteger(buffer[9]);
+                      //  sensorsData[3] = bytoHexToInteger(buffer[11]);
+                      //  sensorsData[4] = bytoHexToInteger(buffer[13]);
+                      //  sensorsData[5] = bytoHexToInteger(buffer[15]);
+
+
+
+                        // TODO: 2017-05-06 이거 값 처리해야된다...
+                        // 진짜값 뽑아내는거는 완료....
                         Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " " + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
 
                         //Log.d("꺄 들어왔다. )_<",String.valueOf(buffer[6]));
@@ -509,6 +537,23 @@ public class BluetoothSensorService {
                     break;
                 }
             }
+        }
+
+        private void isForcedSensor(int[] oldSensorDatas, int[] newSensorDatas) {
+            // TODO: 2017-05-07 차이판별하고 그 뒤에
+            double meanDistance = 0.0d;
+            double meanDistanceSum = 0.0d;
+            for(int i = 0 ; i < sensorNum ; i++) {
+                meanDistanceSum += Math.pow((newSensorDatas[i] - oldSensorDatas[i]),2);
+            }
+            meanDistance = meanDistanceSum / (2 * sensorNum);
+            Log.d("meanDistance",String.valueOf(meanDistance));
+
+            //if(meanDistance)
+
+
+           // mHandler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
+           //         .sendToTarget();
         }
 
         private int bytoHexToInteger(byte hexNum) {
