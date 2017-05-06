@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+
 /**
  * Created by joyeongje on 2017. 3. 18..
  */
@@ -436,6 +437,8 @@ public class BluetoothSensorService {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
+
+
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
@@ -447,38 +450,75 @@ public class BluetoothSensorService {
 
         public void run() {
             Log.i(TAG, "BEGIN mSensorConnectedThread");
-            byte[] buffer = new byte[20];
+            byte[] buffer = new byte[26];
+
             int bytes;
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
                     bytes = mmInStream.read(buffer);
+                    // 여기서 testmode fragment 나
                     mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                     //Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
                     //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-                    // TODO: 2017-04-28 통신 로직 센서값 들어오면 다시 코딩. 
-                    //byte id;
-                    //for(int i=0; i<bytes ; i++){
-                    //    if(((byte)buffer[i] == (byte)0xFF) && ((byte)buffer[i+1]  == (byte)0xFF) && ((byte)buffer[i+10] == (byte)0xFE && ((byte)buffer[i+11] == (byte)0xFE) )){
-                    //        id = (byte)buffer[i+2];
-                    //        for(int k = 0 ; k < 6 ; k++) {
-                    //            sensorsData[k] = (int)buffer[i+4+k];
-                    //            Log.d("sensor Data",String.valueOf(sensorsData[k]));
-                    //        }
-                    //        String deviceID = "resight01";
-                    //        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    //        DatabaseReference myRef = database.getReference("monitor_result");
-                    //        sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
-                    //        myRef.child(deviceID).child("sensors").push().setValue(sensorData);
-                    //    }
-                    //}
+                    Log.d("sensor Data1",String.valueOf(buffer[0]));
+                    Log.d("sensor Data2",String.valueOf(buffer[1]));
+                    Log.d("sensor Data3",String.valueOf(buffer[24]));
+                    Log.d("sensor Data4",String.valueOf(buffer[25]));
+                    sensorsData[0] = (byte) 0xFE;
+                    sensorsData[1] = (byte) 0xFF;
+
+                    Log.d("0xFE",String.valueOf(sensorsData[0]));
+                    Log.d("0xFF",String.valueOf(sensorsData[1]));
+
+                  // //   TODO: 2017-04-28 통신 로직 센서값 buffer) 다시 코딩.
+                  //  for(int k = 0 ; k < 6 ; k++) {
+                  //      sensorsData[k] = (int)buffer[k];
+                  //      Log.d("sensor Data",String.valueOf(sensorsData[k]));
+                  //  }
+                     byte id;
+                    if(((byte)buffer[0] == (byte)0xFF&& (byte)buffer[1]  == (byte)0xFF && buffer[3] == (byte)0x11  && buffer[4] == (byte)0x02 & buffer[22] == (byte)0x02 && buffer[24] == (byte)0xFE && (byte)buffer[25] == (byte)0xFE)){
+                        // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
+
+                      //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+                      //  Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+                      //  Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+
+                        sensorsData[0] = bytoHexToInteger(buffer[5]);
+                        sensorsData[1] = bytoHexToInteger(buffer[7]);
+                        sensorsData[2] = bytoHexToInteger(buffer[9]);
+                        sensorsData[3] = bytoHexToInteger(buffer[11]);
+                        sensorsData[4] = bytoHexToInteger(buffer[13]);
+                        sensorsData[5] = bytoHexToInteger(buffer[15]);
+
+                        Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " " + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
+
+                        //Log.d("꺄 들어왔다. )_<",String.valueOf(buffer[6]));
+
+                             String deviceID = "resight01";
+                          //   FirebaseDatabase database = FirebaseDatabase.getInstance();
+                          //   DatabaseReference myRef = database.getReference("monitor_result");
+                         //    sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
+                           //  myRef.child(deviceID).child("sensors").push().setValue(sensorData);
+                    }
+
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     break;
                 }
             }
+        }
+
+        private int bytoHexToInteger(byte hexNum) {
+            StringBuilder sb = new StringBuilder(2);
+            String hexDecimalNum;
+
+            hexDecimalNum = "0" + Integer.toHexString(0xff & hexNum);
+            sb.append(hexDecimalNum.substring(hexDecimalNum.length()-2));
+
+            return Integer.parseInt(sb.toString(),16);
         }
 
         /**

@@ -105,6 +105,7 @@ public class TestModeFragment extends Fragment {
                     randNum = (int) ((Math.random() * 100) + 1);
                     graphSeriesArrays[i].appendData(new DataPoint(xValue, randNum), true, 40);
                     textViews[i].setText(i + "번 : " + randNum);
+                    // TODO: 2017-05-06 리사이트와연동.
                 }
                 mHanler.postDelayed(this,50); //
             }

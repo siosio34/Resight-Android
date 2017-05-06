@@ -41,7 +41,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                 if (bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mNewDevicesArrayAdapter.addBloothDeviceToList(bluetoothDevice);
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
-                    Log.d("새로운 기기목록.", bluetoothDevice.getName());
+//                    Log.d("새로운 기기목록.", bluetoothDevice.getName());
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) { // 검색이 끝났을때!

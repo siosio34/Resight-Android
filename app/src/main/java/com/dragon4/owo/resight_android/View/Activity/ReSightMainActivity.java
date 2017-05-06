@@ -221,7 +221,9 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 case BluetoothConstants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
+                    //Log.d("readBuf", readBuf[0])
                     String readMessage = new String(readBuf, 0, msg.arg1);
+
                     Log.d(TAG, readMessage);
                     break;
                 case BluetoothConstants.MESSAGE_DEVICE_NAME:
