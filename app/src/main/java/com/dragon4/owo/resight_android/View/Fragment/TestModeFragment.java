@@ -106,7 +106,6 @@ public class TestModeFragment extends Fragment {
                     //randNum = (int) ((Math.random() * 100) + 1);
                     graphSeriesArrays[i].appendData(new DataPoint(xValue, BluetoothSensorService.sensorsData[i]), true, 40);
                     textViews[i].setText((i+1) + "번 : " + BluetoothSensorService.sensorsData[i]);
-
                 }
                 mHanler.postDelayed(this,50); //
             }

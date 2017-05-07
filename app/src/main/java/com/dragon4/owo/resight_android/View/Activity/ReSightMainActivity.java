@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,10 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.dragon4.owo.resight_android.Model.ResightBluetoothDevice;
 import com.dragon4.owo.resight_android.View.Fragment.TestTrainModeMainFragment;
 import com.dragon4.owo.resight_android.util.ActivityResultEvent;
 import com.dragon4.owo.resight_android.util.BluetoothConstants;
@@ -35,6 +39,10 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class ReSightMainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
@@ -62,6 +70,11 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     Toolbar toolbar;
 
+    private ImageView sensorMiniIcon;
+    private ImageView handMiniIcon;
+
+    private Realm mRealm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,32 +83,49 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         initToolbar();
         initBottomNavigationBar();
         initFragment();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initBluetooth();
+      //  initRealmDB();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume 호출");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealm.close();
+    }
+
+    private void initBluetooth() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else if (mSensorService == null) {
             mSensorService = new BluetoothSensorService(this, mSensorHandler);
+            Log.d(TAG,"mSensorService 생성됨.");
         } else if (mHandService == null) {
             mHandService = new BluetoothHandService(this, mHandHandler);
+            Log.d(TAG,"mHandService 생성됨.");
         }
     }
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -106,6 +136,25 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        sensorMiniIcon = (ImageView) findViewById(R.id.sensor_mini_icon);
+        sensorMiniIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+           //     connectSensorDevice();
+                // TODO: 2017-05-07 연결하는것 구현해야하다.
+            }
+        });
+
+        handMiniIcon   = (ImageView) findViewById(R.id.hand_mini_icon);
+        handMiniIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            //    connectHandDevice();
+                // TODO: 2017-05-07 연결하는것.
+            }
+        });
+
     }
 
     private void initBottomNavigationBar() {
@@ -141,7 +190,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             startActivityForResult(bluetoothMoveIntent, REQUEST_CONNECT_DEVICE);
             return true;
         } else if(id == R.id.action_settings) {
-
             Intent settingMovieIntent = new Intent(ReSightMainActivity.this, SettingActivity.class);
             startActivity(settingMovieIntent);
             return true; //
@@ -158,11 +206,13 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 case BluetoothConstants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothSensorService.STATE_CONNECTED:
+                            // TODO: 2017-05-07 여기서 사용한다는 이미지 바꿔야함..
                             break;
                         case BluetoothSensorService.STATE_CONNECTING:
                             break;
                         case BluetoothSensorService.STATE_LISTEN:
                         case BluetoothSensorService.STATE_NONE:
+                            // TODO: 2017-05-07 여기서 사용 안된다는 이미지바꿔야함.
                             break;
                     }
                     break;
@@ -248,7 +298,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
        // Check that there's actually something to send
        if (message.length() > 0) {
-           Log.d("여기로도","들어온다");
+
            // Get the message bytes and tell the BluetoothHandService to write
            byte[] send = message.getBytes();
            mHandService.write(send);
@@ -294,12 +344,12 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     private void bluetoothTest() {
         if(mHandService != null && mSensorService != null) {
-            String temp = "a";
-            int randNum = (int)(Math.random() * 100);
-            String b = randNum > 50 ? "a" : "b";
-            sendMessage(b);
+
             Log.d("ddddd","여기는??");
-//
+          //  String temp = "a";
+          //  int randNum = (int)(Math.random() * 100);
+          //  String b = randNum > 50 ? "a" : "b";
+          //  sendMessage(b);
           //  byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
           //  sendMessage2(buff);
            byte[] buff2 = {(byte) 0x11};
@@ -315,10 +365,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     @Override
     public void onTabReselected(int position) {
 
-      //  if(position == 0) {
-      //      byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x10, (byte) 0xFE, (byte) 0xFE};
-      //      sendMessage2(buff);
-      //  }
     }
 
 
@@ -343,25 +389,71 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
     private void connectDevice(Intent data, boolean secure) {
 
-        String address = data.getExtras()
-                .getString(BluetoothSearchActivity.EXTRA_DEVICE_ADDRESS);
-
         String name =  data.getExtras()
                 .getString(BluetoothSearchActivity.EXTRA_DEVICE_NAME);
+
+        String address = data.getExtras()
+                .getString(BluetoothSearchActivity.EXTRA_DEVICE_ADDRESS);
 
         Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 
         if(name.contains("RESIGHT")) {
-           mHandService.connect(device,secure);
+            mHandService.connect(device,secure);
+         //   saveResightBluetoothAddress("hand",name, address);
         } else if(name.contains("GOLFIT")) {
             mSensorService.connect(device,secure);
+      //      saveResightBluetoothAddress("sensor",name, address);
         } else {
-            Toast.makeText(this,"올바른 블루투스 기기에 연결해주십시오.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "올바른 블루투스 기기에 연결해주십시오.", Toast.LENGTH_LONG).show();
         }
-     //   mChatService.connect(device, secure);
-
     }
+
+ //   private void initRealmDB() {
+ //       Realm.init(getApplicationContext());
+ //       RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+ //       mRealm = Realm.getInstance(realmConfiguration);
+ //   }
+//
+ //   private void saveResightBluetoothAddress(final String sensorType, final String name, final String address) {
+ //       final ResightBluetoothDevice resightBluetoohhDevice = new ResightBluetoothDevice();
+ //       resightBluetoohhDevice.setSensorType(sensorType);
+ //       resightBluetoohhDevice.setName(name);
+ //       resightBluetoohhDevice.setDeviceAddress(address);
+//
+ //       mRealm.executeTransaction(new Realm.Transaction() {
+ //           @Override
+ //           public void execute(Realm realm) {
+ //               realm.copyToRealmOrUpdate(resightBluetoohhDevice);
+ //           }
+ //       });
+ //   }
+//
+ //   private void connectSensorDevice() {
+ //       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
+ //               .contains("sensorType","sensor").findFirst();
+//
+ //       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+ //       mSensorService.connect(device,true);
+//
+ //   }
+ //   private void connectHandDevice() {
+ //       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
+ //               .contains("sensorType","hand").findFirst();
+//
+ //       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+ //       mHandService.connect(device,true);
+ //       //  BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+ //      // mHandService.connect(device,secure);
+ //   }
+
+
+
+
+
+
+
+
 
 
 

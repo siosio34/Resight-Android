@@ -64,8 +64,9 @@ public class BluetoothSensorService {
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
-     * @param context  The UI Activity Context
-     * @param handler  A Handler to send messages back to the UI Activity
+     *
+     * @param context The UI Activity Context
+     * @param handler A Handler to send messages back to the UI Activity
      */
     public BluetoothSensorService(Context context, Handler handler) {
         this._context = (ReSightMainActivity) context;
@@ -78,7 +79,8 @@ public class BluetoothSensorService {
 
     /**
      * Set the current state of the chat connection
-     * @param state  An integer defining the current connection state
+     *
+     * @param state An integer defining the current connection state
      */
     private synchronized void setState(int state) {
         if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
@@ -89,24 +91,30 @@ public class BluetoothSensorService {
     }
 
     /**
-     * Return the current connection state. */
+     * Return the current connection state.
+     */
     public synchronized int getState() {
         return mState;
     }
 
     /**
      * Start the chat service. Specifically start AcceptThread to begin a
-     * session in listening (server) mode. Called by the Activity onResume() */
+     * session in listening (server) mode. Called by the Activity onResume()
+     */
     public synchronized void start() {
         if (D) Log.d(TAG, "start");
 
         // Cancel any thread attempting to make a connection
         if (mSensorConnectThread != null) {
-            mSensorConnectThread.cancel(); mSensorConnectThread = null;}
+            mSensorConnectThread.cancel();
+            mSensorConnectThread = null;
+        }
 
         // Cancel any thread currently running a connection
         if (mSensorConnectedThread != null) {
-            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
+            mSensorConnectedThread.cancel();
+            mSensorConnectedThread = null;
+        }
 
         // Start the thread to listen on a BluetoothServerSocket
         if (mSensorSecureAcceptThread == null) {
@@ -118,7 +126,8 @@ public class BluetoothSensorService {
 
     /**
      * Start the ConnectThread to initiate a connection to a remote device.
-     * @param device  The BluetoothDevice to connect
+     *
+     * @param device The BluetoothDevice to connect
      * @param secure Socket Security type - Secure (true) , Insecure (false)
      */
     public synchronized void connect(BluetoothDevice device, boolean secure) {
@@ -127,12 +136,16 @@ public class BluetoothSensorService {
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
             if (mSensorConnectThread != null) {
-                mSensorConnectThread.cancel(); mSensorConnectThread = null;}
+                mSensorConnectThread.cancel();
+                mSensorConnectThread = null;
+            }
         }
 
         // Cancel any thread currently running a connection
         if (mSensorConnectedThread != null) {
-            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
+            mSensorConnectedThread.cancel();
+            mSensorConnectedThread = null;
+        }
 
         // Start the thread to connect with the given device
         mSensorConnectThread = new ConnectThread(device, secure);
@@ -142,8 +155,9 @@ public class BluetoothSensorService {
 
     /**
      * Start the ConnectedThread to begin managing a Bluetooth connection
-     * @param socket  The BluetoothSocket on which the connection was made
-     * @param device  The BluetoothDevice that has been connected
+     *
+     * @param socket The BluetoothSocket on which the connection was made
+     * @param device The BluetoothDevice that has been connected
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice
             device, final String socketType) {
@@ -151,18 +165,21 @@ public class BluetoothSensorService {
 
         // Cancel the thread that completed the connection
         if (mSensorConnectThread != null) {
-            mSensorConnectThread.cancel(); mSensorConnectThread = null;}
+            mSensorConnectThread.cancel();
+            mSensorConnectThread = null;
+        }
 
         // Cancel any thread currently running a connection
         if (mSensorConnectedThread != null) {
-            mSensorConnectedThread.cancel(); mSensorConnectedThread = null;}
+            mSensorConnectedThread.cancel();
+            mSensorConnectedThread = null;
+        }
 
         // Cancel the accept thread because we only want to connect to one device
         if (mSensorSecureAcceptThread != null) {
             mSensorSecureAcceptThread.cancel();
             mSensorSecureAcceptThread = null;
         }
-
 
         // Start the thread to manage the connection and perform transmissions
         mSensorConnectedThread = new ConnectedThread(socket, socketType);
@@ -204,6 +221,7 @@ public class BluetoothSensorService {
 
     /**
      * Write to the ConnectedThread in an unsynchronized manner
+     *
      * @param out The bytes to write
      * @see ConnectedThread#write(byte[])
      */
@@ -215,17 +233,16 @@ public class BluetoothSensorService {
             if (mState != STATE_CONNECTED) return;
             r = mSensorConnectedThread;
         }
-        // Perform the write unsynchronized
         Log.d("byte to string", new String(out));
-        Log.d("byte to hex",byteArrayToHex(out));
+        Log.d("byte to hex", byteArrayToHex(out));
         // Perform the write unsynchronized
         r.write(out);
     }
 
     private String byteArrayToHex(byte[] a) {
         StringBuilder sb = new StringBuilder();
-        for(final byte b: a)
-            sb.append(String.format("%02x ", b&0xff));
+        for (final byte b : a)
+            sb.append(String.format("%02x ", b & 0xff));
         return sb.toString();
     }
 
@@ -275,12 +292,12 @@ public class BluetoothSensorService {
 
         public AcceptThread(boolean secure) {
             BluetoothServerSocket tmp = null;
-            mSocketType = secure ? "Secure":"Insecure";
+            mSocketType = secure ? "Secure" : "Insecure";
 
             // Create a new listening server socket
             try {
                 tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
-                            MY_UUID_SECURE);
+                        MY_UUID_SECURE);
 
                 // TODO: 2017-04-27 if insecure 
             } catch (IOException e) {
@@ -345,8 +362,6 @@ public class BluetoothSensorService {
         }
     }
 
-
-
     /**
      * This thread runs while attempting to make an outgoing connection
      * with a device. It runs straight through; the connection either
@@ -387,11 +402,11 @@ public class BluetoothSensorService {
             try {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception
-                Log.d("소켓 연결 성공","테스트");
+                Log.d("소켓 연결 성공", "테스트");
                 mmSocket.connect();
             } catch (IOException e) {
                 // Close the socket
-                Log.d("소켓 연결 실패","테스트");
+                Log.d("소켓 연결 실패", "테스트");
                 try {
                     mmSocket.close();
                 } catch (IOException e2) {
@@ -440,7 +455,6 @@ public class BluetoothSensorService {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
 
-
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
@@ -466,41 +480,35 @@ public class BluetoothSensorService {
                         e.printStackTrace();
                     }
                     bytes = mmInStream.read(buffer);
-                    // 여기서 testmode fragment 나
                     mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 
-                    //Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
-                    //byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-                  //  Log.d("sensor Data1",String.valueOf(buffer[0]));
-                  //  Log.d("sensor Data2",String.valueOf(buffer[1]));
-                  //  Log.d("sensor Data3",String.valueOf(buffer[24]));
-                  //  Log.d("sensor Data4",String.valueOf(buffer[25]));
-                  //  sensorsData[0] = (byte) 0xFE;
-                //    sensorsData[1] = (byte) 0xFF;
+                    // Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
+                    // byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
+                    // Log.d("sensor Data1",String.valueOf(buffer[0]));
+                    // Log.d("sensor Data2",String.valueOf(buffer[1]));
+                    // Log.d("sensor Data3",String.valueOf(buffer[24]));
+                    // Log.d("sensor Data4",String.valueOf(buffer[25]));
+                    // Log.d("0xFE",String.valueOf(sensorsData[0]));
+                    // Log.d("0xFF",String.valueOf(sensorsData[1]));
+                    // sensorsData[0] = (byte) 0xFE;
+                    // sensorsData[1] = (byte) 0xFF;
 
-                //    Log.d("0xFE",String.valueOf(sensorsData[0]));
-                //    Log.d("0xFF",String.valueOf(sensorsData[1]));
+                    byte id;
+                    if (((byte) buffer[0] == (byte) 0xFF && (byte) buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[4] == (byte) 0x02 & buffer[22] == (byte) 0x02 && buffer[24] == (byte) 0xFE && (byte) buffer[25] == (byte) 0xFE)) {
 
-                     byte id;
-                    if(((byte)buffer[0] == (byte)0xFF&& (byte)buffer[1]  == (byte)0xFF && buffer[3] == (byte)0x11  && buffer[4] == (byte)0x02 & buffer[22] == (byte)0x02 && buffer[24] == (byte)0xFE && (byte)buffer[25] == (byte)0xFE)){
                         // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
+                        //    Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+                        //    Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+                        //    Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
 
-                    //    Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-                    //    Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-                    //    Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
-
-                        if(!firstLoadSensor) {
+                        if (!firstLoadSensor) {
                             for (int i = 0; i < 6; i++) {
                                 sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-                                //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
                             }
                             firstLoadSensor = true;
-                          //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-
-                         //   isForcedSensor(sensorsData, newSensorsData);
-
+                            //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+                            //   isForcedSensor(sensorsData, newSensorsData);
                         } else {
-                            Log.d("여기에 들어왔소", "갹");
                             for (int i = 0; i < 6; i++) {
                                 newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
                                 //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
@@ -508,27 +516,15 @@ public class BluetoothSensorService {
                             isForcedSensor(sensorsData, newSensorsData);
                             System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
                         }
-
-                      //  sensorsData[0] = bytoHexToInteger(buffer[5]);
-                      //  sensorsData[1] = bytoHexToInteger(buffer[7]);
-                      //  sensorsData[2] = bytoHexToInteger(buffer[9]);
-                      //  sensorsData[3] = bytoHexToInteger(buffer[11]);
-                      //  sensorsData[4] = bytoHexToInteger(buffer[13]);
-                      //  sensorsData[5] = bytoHexToInteger(buffer[15]);
-
-
-
                         // TODO: 2017-05-06 이거 값 처리해야된다...
-                        // 진짜값 뽑아내는거는 완료....
-                        Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " " + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
+                        Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
+                                + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
 
-                        //Log.d("꺄 들어왔다. )_<",String.valueOf(buffer[6]));
-
-                             String deviceID = "resight01";
-                          //   FirebaseDatabase database = FirebaseDatabase.getInstance();
-                          //   DatabaseReference myRef = database.getReference("monitor_result");
-                         //    sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
-                           //  myRef.child(deviceID).child("sensors").push().setValue(sensorData);
+                        String deviceID = "resight01";
+                        //  FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        //  DatabaseReference myRef = database.getReference("monitor_result");
+                        //  sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
+                        //  myRef.child(deviceID).child("sensors").push().setValue(sensorData);
                     }
 
                 } catch (IOException e) {
@@ -543,17 +539,15 @@ public class BluetoothSensorService {
             // TODO: 2017-05-07 차이판별하고 그 뒤에
             double meanDistance = 0.0d;
             double meanDistanceSum = 0.0d;
-            for(int i = 0 ; i < sensorNum ; i++) {
-                meanDistanceSum += Math.pow((newSensorDatas[i] - oldSensorDatas[i]),2);
+            for (int i = 0; i < sensorNum; i++) {
+                meanDistanceSum += Math.pow((newSensorDatas[i] - oldSensorDatas[i]), 2);
             }
             meanDistance = meanDistanceSum / (2 * sensorNum);
-            Log.d("meanDistance",String.valueOf(meanDistance));
+            Log.d("meanDistance", String.valueOf(meanDistance));
 
             //if(meanDistance)
-
-
-           // mHandler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
-           //         .sendToTarget();
+            // mHandler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
+            //         .sendToTarget();
         }
 
         private int bytoHexToInteger(byte hexNum) {
@@ -561,19 +555,20 @@ public class BluetoothSensorService {
             String hexDecimalNum;
 
             hexDecimalNum = "0" + Integer.toHexString(0xff & hexNum);
-            sb.append(hexDecimalNum.substring(hexDecimalNum.length()-2));
+            sb.append(hexDecimalNum.substring(hexDecimalNum.length() - 2));
 
-            return Integer.parseInt(sb.toString(),16);
+            return Integer.parseInt(sb.toString(), 16);
         }
 
         /**
          * Write to the connected OutStream.
-         * @param buffer  The bytes to write
+         *
+         * @param buffer The bytes to write
          */
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
-               // Log.d("데이터쓴다", String.valueOf(buffer));
+                // Log.d("데이터쓴다", String.valueOf(buffer));
 
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
@@ -595,12 +590,12 @@ public class BluetoothSensorService {
 
     /**
      * Convert 2-bytes integer to JAVA integer
-     * @param firstByte first byte of 2-byte integer
+     *
+     * @param firstByte  first byte of 2-byte integer
      * @param secondByte second byte of 2-byte integer
      * @return Integer(JAVA default data type)
      */
-    protected static int toUnsignedIntFromTwoBytes(byte firstByte, byte secondByte)
-    {
+    protected static int toUnsignedIntFromTwoBytes(byte firstByte, byte secondByte) {
         int result = 0;
 
         result |= secondByte & 0xFF;
@@ -613,12 +608,12 @@ public class BluetoothSensorService {
 
     /**
      * Convert 2-bytes integer to JAVA integer
-     * @param firstByte first byte of 2-byte integer
+     *
+     * @param firstByte  first byte of 2-byte integer
      * @param secondByte second byte of 2-byte integer
      * @return Integer(JAVA default data type)
      */
-    protected static int toUnsignedIntFromTwoBytes2(byte secondByte, byte firstByte)
-    {
+    protected static int toUnsignedIntFromTwoBytes2(byte secondByte, byte firstByte) {
         int result = 0;
 
         result |= secondByte;
