@@ -21,8 +21,8 @@ public class CustomizeDialogActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customize_dialog);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_customize_dialog);
         registerButtonEvent();
     }
 
