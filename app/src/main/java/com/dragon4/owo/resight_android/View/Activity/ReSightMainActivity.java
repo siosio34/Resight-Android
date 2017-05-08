@@ -56,7 +56,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private static final String TAG2 = "HnadHandler";
 
     int lastSelectedPosition = 0;
-    BottomNavigationBar bottomNavigationBar;
+    private BottomNavigationBar bottomNavigationBar;
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -79,17 +79,18 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resight_main);
-
         initToolbar();
         initBottomNavigationBar();
         initFragment();
+        initBluetooth();
+        initRealmDB();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initBluetooth();
-      //  initRealmDB();
+
+
     }
 
     @Override
@@ -103,29 +104,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         super.onDestroy();
         mRealm.close();
     }
-
-    private void initBluetooth() {
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
-        } else if (mSensorService == null) {
-            mSensorService = new BluetoothSensorService(this, mSensorHandler);
-            Log.d(TAG,"mSensorService 생성됨.");
-        } else if (mHandService == null) {
-            mHandService = new BluetoothHandService(this, mHandHandler);
-            Log.d(TAG,"mHandService 생성됨.");
-        }
-    }
-
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -141,8 +119,8 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         sensorMiniIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-           //     connectSensorDevice();
-                // TODO: 2017-05-07 연결하는것 구현해야하다.
+                connectSensorDevice();
+                // TODO: 2017-05-08 이미지 바뀌는것도 구현하면된다.
             }
         });
 
@@ -150,8 +128,8 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         handMiniIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //    connectHandDevice();
-                // TODO: 2017-05-07 연결하는것.
+                connectHandDevice();
+                // TODO: 2017-05-08 이미지 바뀌는것도 구현하면된다.
             }
         });
 
@@ -168,11 +146,88 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         bottomNavigationBar.setTabSelectedListener(this);
     }
 
+    // Bottom Navigation Activity
+    @Override
+    public void onTabSelected(int position) {
+        Fragment currentSelectedFragment = null;
+        switch (position) {
+            case 0:
+                currentSelectedFragment = monitoringFragment;
+                bluetoothTest();
+                break;
+            case 1:
+                currentSelectedFragment = customizeFragment;
+                break;
+            case 2:
+                currentSelectedFragment = marketFragment;
+                break;
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,currentSelectedFragment).commit();
+    }
+
+    private void bluetoothTest() {
+        Log.d("ddddd","여기는들어오나??");
+        if(mHandService != null && mSensorService != null) {
+
+            Log.d("ddddd","여기는??");
+            //  String temp = "a";
+            //  int randNum = (int)(Math.random() * 100);
+            //  String b = randNum > 50 ? "a" : "b";
+            //  sendMessage(b);
+            //  byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
+            //  sendMessage2(buff);
+            byte[] buff2 = {(byte) 0x11};
+            sendMessageToSensor(buff2);
+        }
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
+    }
+
     private void initFragment() {
         monitoringFragment = new TestTrainModeMainFragment();
         customizeFragment = new CustomMizeFragment();
         marketFragment = new MarketFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container,monitoringFragment).commit();
+    }
+
+    private void initBluetooth() {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            // Otherwise, setup the chat session
+        }
+
+        if(mSensorService == null) {
+            mSensorService = new BluetoothSensorService(this, mSensorHandler);
+            Log.d(TAG, "mSensorService 생성됨.");
+        }
+
+         if (mHandService == null ) {
+             mHandService = new BluetoothHandService(this, mHandHandler);
+             Log.d(TAG,"mHandService 생성됨.");
+        }
+    }
+
+    private void initRealmDB() {
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        mRealm = Realm.getInstance(realmConfiguration);
     }
 
     @Override
@@ -294,7 +349,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         }
     };
 
-   private void sendMessage(String message) {
+   private void sendMessageToHand(String message) {
 
        // Check that there's actually something to send
        if (message.length() > 0) {
@@ -309,7 +364,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
        }
    }
 
-    private void sendMessage2(byte[] message) {
+    private void sendMessageToSensor(byte[] message) {
          // Check that we're actually connected before trying anything
       //   if (mChatService.getState() != BluetoothSensorService.STATE_CONNECTED) {
       //       Toast.makeText(this, "블루투스가 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -323,49 +378,6 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
              // Reset out string buffer to zero and clear the edit text field
          }
      }
-    // Bottom Navigation Activity
-    @Override
-    public void onTabSelected(int position) {
-        Fragment currentSelectedFragment = null;
-        switch (position) {
-            case 0:
-                currentSelectedFragment = monitoringFragment;
-                bluetoothTest();
-                break;
-            case 1:
-                currentSelectedFragment = customizeFragment;
-                break;
-            case 2:
-                currentSelectedFragment = marketFragment;
-                break;
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,currentSelectedFragment).commit();
-    }
-
-    private void bluetoothTest() {
-        if(mHandService != null && mSensorService != null) {
-
-            Log.d("ddddd","여기는??");
-          //  String temp = "a";
-          //  int randNum = (int)(Math.random() * 100);
-          //  String b = randNum > 50 ? "a" : "b";
-          //  sendMessage(b);
-          //  byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
-          //  sendMessage2(buff);
-           byte[] buff2 = {(byte) 0x11};
-           sendMessage2(buff2);
-        }
-    }
-
-    @Override
-    public void onTabUnselected(int position) {
-
-    }
-
-    @Override
-    public void onTabReselected(int position) {
-
-    }
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -400,61 +412,43 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
 
         if(name.contains("RESIGHT")) {
             mHandService.connect(device,secure);
-         //   saveResightBluetoothAddress("hand",name, address);
+            saveResightBluetoothAddress("hand",name, address);
         } else if(name.contains("GOLFIT")) {
             mSensorService.connect(device,secure);
-      //      saveResightBluetoothAddress("sensor",name, address);
+            saveResightBluetoothAddress("sensor",name, address);
         } else {
             Toast.makeText(this, "올바른 블루투스 기기에 연결해주십시오.", Toast.LENGTH_LONG).show();
         }
     }
 
- //   private void initRealmDB() {
- //       Realm.init(getApplicationContext());
- //       RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
- //       mRealm = Realm.getInstance(realmConfiguration);
- //   }
-//
- //   private void saveResightBluetoothAddress(final String sensorType, final String name, final String address) {
- //       final ResightBluetoothDevice resightBluetoohhDevice = new ResightBluetoothDevice();
- //       resightBluetoohhDevice.setSensorType(sensorType);
- //       resightBluetoohhDevice.setName(name);
- //       resightBluetoohhDevice.setDeviceAddress(address);
-//
- //       mRealm.executeTransaction(new Realm.Transaction() {
- //           @Override
- //           public void execute(Realm realm) {
- //               realm.copyToRealmOrUpdate(resightBluetoohhDevice);
- //           }
- //       });
- //   }
-//
- //   private void connectSensorDevice() {
- //       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
- //               .contains("sensorType","sensor").findFirst();
-//
- //       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
- //       mSensorService.connect(device,true);
-//
- //   }
- //   private void connectHandDevice() {
- //       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
- //               .contains("sensorType","hand").findFirst();
-//
- //       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
- //       mHandService.connect(device,true);
- //       //  BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
- //      // mHandService.connect(device,secure);
- //   }
+   private void saveResightBluetoothAddress(final String sensorType, final String name, final String address) {
+       final ResightBluetoothDevice resightBluetoohhDevice = new ResightBluetoothDevice();
+       resightBluetoohhDevice.setSensorType(sensorType);
+       resightBluetoohhDevice.setName(name);
+       resightBluetoohhDevice.setDeviceAddress(address);
 
+       mRealm.executeTransaction(new Realm.Transaction() {
+           @Override
+           public void execute(Realm realm) {
+               realm.copyToRealmOrUpdate(resightBluetoohhDevice);
+           }
+       });
+   }
 
+   private void connectSensorDevice() {
+       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
+               .contains("sensorType","sensor").findFirst();
 
+       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+       mSensorService.connect(device,true);
 
+   }
+   private void connectHandDevice() {
+       ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
+               .contains("sensorType","hand").findFirst();
 
+       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+       mHandService.connect(device,true);
 
-
-
-
-
-
+   }
 }

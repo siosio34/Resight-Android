@@ -99,7 +99,7 @@ public class CustomMizeAppSelectFragment extends Fragment {
 
                     Intent serviceIntent = new Intent(customContext,OnTopActivityService.class);
                     customContext.startService(serviceIntent);
-                    customContext.stopService(serviceIntent);
+                  //  customContext.stopService(serviceIntent);
                     // 서비스를 삭제할때에는 서비스를 실행시켜준곳에서 해야된다.
 
                    // ConstraintLayout constraintLayout = new ConstraintLayout(this);
