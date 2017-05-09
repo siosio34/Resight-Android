@@ -261,12 +261,14 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 case BluetoothConstants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothSensorService.STATE_CONNECTED:
-                            // TODO: 2017-05-07 여기서 사용한다는 이미지 바꿔야함..
+                            sensorMiniIcon.setImageResource(R.drawable.icon_bleon_sensor_on);
                             break;
                         case BluetoothSensorService.STATE_CONNECTING:
                             break;
                         case BluetoothSensorService.STATE_LISTEN:
                         case BluetoothSensorService.STATE_NONE:
+                            sensorMiniIcon.setImageResource(R.drawable.icon_bleoff_sensor2);
+
                             // TODO: 2017-05-07 여기서 사용 안된다는 이미지바꿔야함.
                             break;
                     }
@@ -309,11 +311,13 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                 case BluetoothConstants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothSensorService.STATE_CONNECTED:
+                            handMiniIcon.setImageResource(R.drawable.icon_bleon_handon);
                             break;
                         case BluetoothSensorService.STATE_CONNECTING:
                             break;
                         case BluetoothSensorService.STATE_LISTEN:
                         case BluetoothSensorService.STATE_NONE:
+                            handMiniIcon.setImageResource(R.drawable.icon_bleoff_hand2);
                             break;
                     }
                     break;
@@ -419,6 +423,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
         } else {
             Toast.makeText(this, "올바른 블루투스 기기에 연결해주십시오.", Toast.LENGTH_LONG).show();
         }
+
     }
 
    private void saveResightBluetoothAddress(final String sensorType, final String name, final String address) {
@@ -448,6 +453,8 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
                .contains("sensorType","hand").findFirst();
 
        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+       Log.d("dd", device.getName());
+
        mHandService.connect(device,true);
 
    }

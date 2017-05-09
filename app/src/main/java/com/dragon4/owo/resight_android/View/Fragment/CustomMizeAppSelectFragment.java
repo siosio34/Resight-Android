@@ -1,5 +1,6 @@
 package com.dragon4.owo.resight_android.View.Fragment;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +8,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -31,6 +34,7 @@ public class CustomMizeAppSelectFragment extends Fragment {
     private PackageManager packageManager;
     public static Context customContext;
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -44,11 +48,25 @@ public class CustomMizeAppSelectFragment extends Fragment {
         getApplicaitonList();
 
         ViewGroup rootView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.fragment_customize_app_select,container,false);
+        rootView.setOnTouchListener(Touchest);
         customAppGridView = (GridView) rootView.findViewById(R.id.custom_grideview);
         customAppGridView.setAdapter(new CustomGridViewAdpater());
 
         return rootView;
     }
+
+    private View.OnTouchListener Touchest = new View.OnTouchListener(){
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Log.d("클릭","클릭클릭");
+            float START_X, START_Y;
+            START_X = event.getRawX();
+            START_Y = event.getRawY();
+            Log.d("눌린좌표",START_X + " : "+ START_Y);
+            return false;
+        }
+    };
 
     private void getApplicaitonList() {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
@@ -89,18 +107,24 @@ public class CustomMizeAppSelectFragment extends Fragment {
             ImageView appImageView = (ImageView) convertView.findViewById(R.id.custom_category_item_imageView);
             appImageView.setBackground(info.activityInfo.loadIcon(packageManager));
             appImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                        @Override
+                        public void onClick(View v) {
 
-                    // 이거활성화시 좌표 받아올수 있다
-                    Intent intent = new Intent(Intent.ACTION_RUN);
-                    intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));
-                    customContext.startActivity(intent);
+                            // 이거활성화시 좌표 받아올수 있다
+                            Intent intent = new Intent(Intent.ACTION_RUN);
+                            intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));
+                            customContext.startActivity(intent);
 
-                    Intent serviceIntent = new Intent(customContext,OnTopActivityService.class);
-                    customContext.startService(serviceIntent);
+                            ActivityManager activityManager = (ActivityManager)customContext.getSystemService(customContext.ACTIVITY_SERVICE);
+                            List<ActivityManager.RunningTaskInfo> info;
+                            info = activityManager.getRunningTasks(1);
+                            ActivityManager.RunningTaskInfo runningTaskInfo = info.get(0);
+                            String curActivityName = runningTaskInfo.topActivity.getClassName();
+                            Log.d("탑 액티비티", curActivityName);
+                   // Intent serviceIntent = new Intent(customContext,OnTopActivityService.class);
+                   // customContext.startService(serviceIntent);
                   //  customContext.stopService(serviceIntent);
-                    // 서비스를 삭제할때에는 서비스를 실행시켜준곳에서 해야된다.
+
 
                    // ConstraintLayout constraintLayout = new ConstraintLayout(this);
 

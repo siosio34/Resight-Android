@@ -155,10 +155,12 @@ public class BluetoothSearchActivity extends AppCompatActivity {
 
         if (pairingDeviceSize > 0) {
             for (BluetoothDevice bluetoothDevice: pairededDevices) {
-                mBondedDevicesArrayAdapter.addBloothDeviceToList(bluetoothDevice);
-                mBondedDevicesArrayAdapter.notifyDataSetChanged();
-                Log.d("페어링된 기기목록...", bluetoothDevice.getName());
-                recentParingBloothDevice = bluetoothDevice;
+                if(bluetoothDevice.getName().contains("RESIGHT") || bluetoothDevice.getName().contains("GOLFIT")) {
+                    mBondedDevicesArrayAdapter.addBloothDeviceToList(bluetoothDevice);
+                    mBondedDevicesArrayAdapter.notifyDataSetChanged();
+                    Log.d("페어링된 기기목록...", bluetoothDevice.getName());
+                    recentParingBloothDevice = bluetoothDevice;
+                }
             }
         }
         else {

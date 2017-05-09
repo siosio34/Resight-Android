@@ -17,7 +17,6 @@ public class CustomizeDialogActivity extends Activity {
     ImageView imageView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +26,10 @@ public class CustomizeDialogActivity extends Activity {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
-
 
 
     public void registerButtonEvent() {
