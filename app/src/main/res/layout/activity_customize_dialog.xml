@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/custom_layout_parent"
-    tools:context=".View.Activity.CustomizeDialogActivity"
+    tools:context=".view.Activity.CustomizeDialogActivity"
     >
 
     <View

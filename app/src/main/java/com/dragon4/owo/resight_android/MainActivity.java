@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.View.Activity.ReSightMainActivity;
-import com.dragon4.owo.resight_android.View.Activity.TutorialActivity1;
+import com.dragon4.owo.resight_android.view.Activity.ReSightMainActivity;
+import com.dragon4.owo.resight_android.view.Activity.TutorialActivity1;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.List;

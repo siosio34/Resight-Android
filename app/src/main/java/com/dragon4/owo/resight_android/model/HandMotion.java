@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Model;
+package com.dragon4.owo.resight_android.model;
 
 /**
  * Created by young on 2017-05-03.

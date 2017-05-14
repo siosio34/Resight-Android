@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.adapter;
+package com.dragon4.owo.resight_android.view.adapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;

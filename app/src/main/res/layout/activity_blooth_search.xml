@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".View.Activity.BluetoothSearchActivity"
+    tools:context=".view.Activity.BluetoothSearchActivity"
     android:background="@color/colorPrimary">
 
     <android.support.constraint.ConstraintLayout

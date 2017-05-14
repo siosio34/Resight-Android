@@ -1,6 +1,5 @@
-package com.dragon4.owo.resight_android.View.Fragment;
+package com.dragon4.owo.resight_android.view.Fragment;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

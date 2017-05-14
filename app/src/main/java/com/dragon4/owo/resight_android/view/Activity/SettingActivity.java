@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.Activity;
+package com.dragon4.owo.resight_android.view.Activity;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -25,14 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.Activity.BluetoothSearchActivity"
+            android:name=".view.Activity.BluetoothSearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".View.Activity.SettingActivity"
+            android:name=".view.Activity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.Activity.ReSightMainActivity"
+            android:name=".view.Activity.ReSightMainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -42,16 +42,16 @@
             android:exported="true" />
 
         <activity
-            android:name=".View.Activity.CustomizeDialogActivity"
+            android:name=".view.Activity.CustomizeDialogActivity"
             android:theme="@android:style/Theme.Translucent" />
         <activity
-            android:name=".View.Activity.TutorialActivity1"
+            android:name=".view.Activity.TutorialActivity1"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.Activity.TutorialActivity2"
+            android:name=".view.Activity.TutorialActivity2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.Activity.HandMotionSelectActivity"
+            android:name=".view.Activity.HandMotionSelectActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
     </application>

@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.Activity;
+package com.dragon4.owo.resight_android.view.Activity;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -6,17 +6,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.dragon4.owo.resight_android.Model.HandMotion;
+import com.dragon4.owo.resight_android.model.HandMotion;
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.View.adapter.HandMotionAdapter;
+import com.dragon4.owo.resight_android.view.adapter.HandMotionAdapter;
 import com.tsengvn.typekit.TypekitContextWrapper;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 

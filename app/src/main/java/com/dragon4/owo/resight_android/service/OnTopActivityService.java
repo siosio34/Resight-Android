@@ -1,35 +1,22 @@
 package com.dragon4.owo.resight_android.service;
 
-import android.app.Activity;
 import android.app.Instrumentation;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.View.Activity.CustomizeDialogActivity;
-import com.dragon4.owo.resight_android.View.Fragment.CustomMizeAppSelectFragment;
-
-import static android.view.Gravity.CENTER;
+import com.dragon4.owo.resight_android.view.Fragment.CustomMizeAppSelectFragment;
 
 public class OnTopActivityService extends Service {
 

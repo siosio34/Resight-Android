@@ -1,20 +1,16 @@
-package com.dragon4.owo.resight_android.View.Fragment;
+package com.dragon4.owo.resight_android.view.Fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.dragon4.owo.resight_android.Model.SensorData;
+import com.dragon4.owo.resight_android.model.SensorData;
 import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
 import com.jjoe64.graphview.GraphView;

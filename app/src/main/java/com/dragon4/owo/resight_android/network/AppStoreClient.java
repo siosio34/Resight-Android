@@ -1,6 +1,6 @@
 package com.dragon4.owo.resight_android.network;
 
-import com.dragon4.owo.resight_android.Model.AppStore;
+import com.dragon4.owo.resight_android.model.AppStore;
 
 import java.util.List;
 

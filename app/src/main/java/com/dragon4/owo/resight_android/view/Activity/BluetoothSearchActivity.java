@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.Activity;
+package com.dragon4.owo.resight_android.view.Activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.View.adapter.BluetoothListAdapter;
+import com.dragon4.owo.resight_android.view.adapter.BluetoothListAdapter;
 import com.tsengvn.typekit.TypekitContextWrapper;
 import com.zcw.togglebutton.ToggleButton;
 

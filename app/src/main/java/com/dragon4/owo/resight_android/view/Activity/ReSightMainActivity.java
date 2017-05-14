@@ -1,15 +1,13 @@
-package com.dragon4.owo.resight_android.View.Activity;
+package com.dragon4.owo.resight_android.view.Activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,27 +20,21 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.dragon4.owo.resight_android.Model.ResightBluetoothDevice;
-import com.dragon4.owo.resight_android.View.Fragment.TestTrainModeMainFragment;
+import com.dragon4.owo.resight_android.model.ResightBluetoothDevice;
+import com.dragon4.owo.resight_android.view.Fragment.TestTrainModeMainFragment;
 import com.dragon4.owo.resight_android.util.ActivityResultEvent;
 import com.dragon4.owo.resight_android.util.BluetoothConstants;
 import com.dragon4.owo.resight_android.util.BluetoothHandService;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
-import com.dragon4.owo.resight_android.View.Fragment.CustomMizeFragment;
-import com.dragon4.owo.resight_android.View.Fragment.MarketFragment;
-import com.dragon4.owo.resight_android.View.Fragment.TestModeFragment;
+import com.dragon4.owo.resight_android.view.Fragment.CustomMizeFragment;
+import com.dragon4.owo.resight_android.view.Fragment.MarketFragment;
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.util.GlobalBus;
-import com.dragon4.owo.resight_android.util.MessageEvent;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 public class ReSightMainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 

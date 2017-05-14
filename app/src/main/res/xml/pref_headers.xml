@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.dragon4.owo.resight_android.View.Activity.BloothSettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.dragon4.owo.resight_android.view.Activity.BloothSettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="com.dragon4.owo.resight_android.View.Activity.BloothSettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.dragon4.owo.resight_android.view.Activity.BloothSettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="com.dragon4.owo.resight_android.View.Activity.BloothSettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.dragon4.owo.resight_android.view.Activity.BloothSettingsActivity$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/pref_header_data_sync" />
 

@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.Model;
+package com.dragon4.owo.resight_android.model;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

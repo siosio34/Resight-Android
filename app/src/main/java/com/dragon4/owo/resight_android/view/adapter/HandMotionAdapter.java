@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.adapter;
+package com.dragon4.owo.resight_android.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dragon4.owo.resight_android.Model.HandMotion;
+import com.dragon4.owo.resight_android.model.HandMotion;
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.View.Activity.HandMotionSelectActivity;
+import com.dragon4.owo.resight_android.view.Activity.HandMotionSelectActivity;
 import com.dragon4.owo.resight_android.util.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;

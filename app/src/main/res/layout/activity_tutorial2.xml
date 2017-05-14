@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dragon4.owo.resight_android.View.Activity.TutorialActivity2">
+    tools:context="com.dragon4.owo.resight_android.view.Activity.TutorialActivity2">
 
     <ImageView
         android:layout_width="wrap_content"

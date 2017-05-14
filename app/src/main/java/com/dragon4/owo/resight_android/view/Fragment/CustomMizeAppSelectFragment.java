@@ -1,4 +1,4 @@
-package com.dragon4.owo.resight_android.View.Fragment;
+package com.dragon4.owo.resight_android.view.Fragment;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dragon4.owo.resight_android.R;
-import com.dragon4.owo.resight_android.service.OnTopActivityService;
 
 import java.util.List;
 
