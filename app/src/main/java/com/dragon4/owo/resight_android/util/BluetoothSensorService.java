@@ -43,7 +43,7 @@ public class BluetoothSensorService {
     private final int sensorNum = 6;
 
     private boolean firstsensorDataSum = true;
-    private int zeroArray[] = new int[]{0,0,0,0,0,0};
+    private int zeroArray[] = new int[]{0, 0, 0, 0, 0, 0};
 
     // Debugging
     private static final String TAG = "BluetoothSensorService";
@@ -480,44 +480,68 @@ public class BluetoothSensorService {
 
             boolean firstLoadSensor = false;
             int bytes = 0;
-            int availableBytes ;
+            int availableBytes;
             byte[] buffer = new byte[26];
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
                     availableBytes = mmInStream.available();
-                    if(availableBytes > 26) {
+                    if (availableBytes > 26) {
                         bytes = mmInStream.read(buffer);
                         mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                         Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
                         Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
 
-                        if (buffer[0] == (byte) 0xFF &&  buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && buffer[25] == (byte) 0xFE) {
-                            if (!firstLoadSensor) {
-                                registForcedSensorWithSumTimer();
+                        if (buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && buffer[25] == (byte) 0xFE) {
+                            //   if (!firstLoadSensor) {
+                            //      // registForcedSensorWithSumTimer();
+                            //       for (int i = 0; i < 6; i++) {
+                            //           newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+                            //          // newSensorDatasSum[i] += sensorsData[i];
+                            //       }
+                            //       firstLoadSensor = true;
+                            //   } else {
+
+                            if(!firstLoadSensor) {
                                 for (int i = 0; i < 6; i++) {
-                                    sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-                                    newSensorDatasSum[i] += sensorsData[i];
+                                    newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+                                    oldSensorDatasSum[i] += newSensorsData[i];
                                 }
-                                firstLoadSensor = true;
                             } else {
-                                    for (int i = 0; i < 6; i++) {
-                                        newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
-                                        newSensorDatasSum[i] += newSensorsData[i];
-                                        newPacketNum++;
-
-                                        // TODO: 2017-05-15  60개씩샘플링을 해야되는건가 아니면 코딩처리를해서 1초마다 해야되는건가. 
-                                        //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
-                                    }
-                                    //sensorsData가 기존에있는 데이터.
-                                    //  isForcedSensor(sensorsData, newSensorsData);
-                                    System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-
+                                for (int i = 0; i < 6; i++) {
+                                    newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+                                    newSensorDatasSum[i] += newSensorsData[i];
+                                }
                             }
+
+                            newPacketNum++;
+
+                            if (newPacketNum == 10) {
+                                // TODO: 2017-05-15 이전 10초거랑 후 10초거랑 비교하는 알고리즘이 들어가야된다,
+                             //  // oldPacketNum = newPacketNum;
+                                newPacketNum = 0;
+                                for (int i = 0; i < 6; i++) {
+                                    diffOldAndNewSensorSum[i] = newSensorDatasSum[i] - oldSensorDatasSum[i];
+                                    Log.d(i + "번째 센서값의 차이 : ", newSensorDatasSum[i] + "-" + oldSensorDatasSum[i] + " = " + diffOldAndNewSensorSum[i]);
+                                }
+                                System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
+                                System.arraycopy(zeroArray, 0, newSensorDatasSum, 0, 6);
+                                firstLoadSensor = true;
+                            }
+
+
+                            // TODO: 2017-05-15 10개씩 쌓는거
+                            // TODO: 2017-05-15 차이량을 쌓는거
+                            //sensorsData가 기존에있는 데이터.
+                            //  isForcedSensor(sensorsData, newSensorsData);
+                           // System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+
+
+                            // }
                             // TODO: 2017-05-06 이거 값 처리해야된다...
-                            Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
-                                    + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
+                            //   Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
+                            //           + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
                         }
 
                     } else {
@@ -540,87 +564,85 @@ public class BluetoothSensorService {
             TimerTask sensorTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if(firstsensorDataSum) {
+                    if (firstsensorDataSum) {
                         firstsensorDataSum = false;
                         System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
-
                         oldPacketNum = newPacketNum;
                         newPacketNum = 0;
-                    }
-                    else {
-                            for (int i = 0; i < 6; i++) {
-                                // TODO: 2017-05-15 분산을 구해야하나..
-                                diffOldAndNewSensorSum[i] = newSensorDatasSum[i] - oldSensorDatasSum[i];
-                                Log.d(i + "번째 센서값의 차이 : ", newSensorDatasSum[i] + "-" + oldSensorDatasSum[i] + " = " + diffOldAndNewSensorSum[i]);
-                            }
-                            // 초단위로 하니까 문제가 생기는거같다. 패킷수단위로 바꿔야되나싶다.
+                    } else {
+                        for (int i = 0; i < 6; i++) {
+                            // TODO: 2017-05-15 분산을 구해야하나..
+                            diffOldAndNewSensorSum[i] = newSensorDatasSum[i] - oldSensorDatasSum[i];
+                            Log.d(i + "번째 센서값의 차이 : ", newSensorDatasSum[i] + "-" + oldSensorDatasSum[i] + " = " + diffOldAndNewSensorSum[i]);
+                        }
+                        // 초단위로 하니까 문제가 생기는거같다. 패킷수단위로 바꿔야되나싶다.
 
-                            Log.d("Packet 차이", newPacketNum  + " - " + oldPacketNum);
-                            oldPacketNum = newPacketNum;
-                            newPacketNum = 0;
-                            System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
-                            System.arraycopy(zeroArray, 0, newSensorDatasSum, 0, 6);
+                        Log.d("Packet 차이", newPacketNum + " - " + oldPacketNum);
+                        oldPacketNum = newPacketNum;
+                        newPacketNum = 0;
+                        System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
+                        System.arraycopy(zeroArray, 0, newSensorDatasSum, 0, 6);
                     }
                 }
             };
             // 1초마다 돌린다.
-            timer.schedule(sensorTimerTask,0,1000);
+            timer.schedule(sensorTimerTask, 0, 1000);
         }
 
 
         //  try {
-                  //      sleep(50);
-                  //  } catch (InterruptedException e) {
-                  //      e.printStackTrace();
-                  //  }
-                    // Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
-                    // byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-                    // Log.d("sensor Data1",String.valueOf(buffer[0]));
-                    // Log.d("sensor Data2",String.valueOf(buffer[1]));
-                    // Log.d("sensor Data3",String.valueOf(buffer[24]));
-                    // Log.d("sensor Data4",String.valueOf(buffer[25]));
-                    // Log.d("0xFE",String.valueOf(sensorsData[0]));
-                    // Log.d("0xFF",String.valueOf(sensorsData[1]));
-                    // sensorsData[0] = (byte) 0xFE;
-                    // sensorsData[1] = (byte) 0xFF;
+        //      sleep(50);
+        //  } catch (InterruptedException e) {
+        //      e.printStackTrace();
+        //  }
+        // Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
+        // byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
+        // Log.d("sensor Data1",String.valueOf(buffer[0]));
+        // Log.d("sensor Data2",String.valueOf(buffer[1]));
+        // Log.d("sensor Data3",String.valueOf(buffer[24]));
+        // Log.d("sensor Data4",String.valueOf(buffer[25]));
+        // Log.d("0xFE",String.valueOf(sensorsData[0]));
+        // Log.d("0xFF",String.valueOf(sensorsData[1]));
+        // sensorsData[0] = (byte) 0xFE;
+        // sensorsData[1] = (byte) 0xFF;
 
-                   // Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-                   // Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-                   // Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
-                  //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
-                  ////  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
-                  // byte id;
-                  // if (((byte) buffer[0] == (byte) 0xFF && (byte) buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && (byte) buffer[25] == (byte) 0xFE)) {
+        // Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+        // Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+        // Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+        //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
+        ////  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
+        // byte id;
+        // if (((byte) buffer[0] == (byte) 0xFF && (byte) buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && (byte) buffer[25] == (byte) 0xFE)) {
 
-                  //     // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
-                  //      //   Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-                  //      //   Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-                  //      //   Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+        //     // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
+        //      //   Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+        //      //   Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+        //      //   Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
 
-                  //     if (!firstLoadSensor) {
-                  //         for (int i = 0; i < 6; i++) {
-                  //             sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-                  //         }
-                  //         firstLoadSensor = true;
-                  //         //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-                  //         //   isForcedSensor(sensorsData, newSensorsData);
-                  //     } else {
-                  //         for (int i = 0; i < 6; i++) {
-                  //             newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-                  //             //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
-                  //         }
-                  //         isForcedSensor(sensorsData, newSensorsData);
-                  //         System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-                  //     }
-                  //     // TODO: 2017-05-06 이거 값 처리해야된다...
-                  //     Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
-                  //             + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
+        //     if (!firstLoadSensor) {
+        //         for (int i = 0; i < 6; i++) {
+        //             sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+        //         }
+        //         firstLoadSensor = true;
+        //         //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+        //         //   isForcedSensor(sensorsData, newSensorsData);
+        //     } else {
+        //         for (int i = 0; i < 6; i++) {
+        //             newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+        //             //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
+        //         }
+        //         isForcedSensor(sensorsData, newSensorsData);
+        //         System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+        //     }
+        //     // TODO: 2017-05-06 이거 값 처리해야된다...
+        //     Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
+        //             + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
 
-                  //     String deviceID = "resight01";
-                        //  FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        //  DatabaseReference myRef = database.getReference("monitor_result");
-                        //  sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
-                        //  myRef.child(deviceID).child("sensors").push().setValue(sensorData);
+        //     String deviceID = "resight01";
+        //  FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //  DatabaseReference myRef = database.getReference("monitor_result");
+        //  sensorData = new SensorData(0, "ARM", sensorsData[0],sensorsData[1],sensorsData[2],sensorsData[3],sensorsData[4],sensorsData[5]);
+        //  myRef.child(deviceID).child("sensors").push().setValue(sensorData);
 
         // 센서 측정할때마다 압력을 비교하는 함수.
         private void isForcedSensor(int[] oldSensorDatas, int[] newSensorDatas) {
