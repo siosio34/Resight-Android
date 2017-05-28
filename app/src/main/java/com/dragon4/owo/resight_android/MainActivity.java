@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         boolean flag = false;
         Intent intent;
 
-        //
         requestBloothPermission();
     }
 

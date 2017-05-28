@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -14,6 +15,9 @@ import android.util.Log;
 import com.dragon4.owo.resight_android.view.Activity.ReSightMainActivity;
 import com.dragon4.owo.resight_android.model.SensorData;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +33,7 @@ import java.util.UUID;
 public class BluetoothSensorService {
 
     ReSightMainActivity _context;
+    Context sensorServiceContext;
 
     public static int sensorsData[] = new int[6];
     private final int[] newSensorsData = new int[6];
@@ -66,6 +71,10 @@ public class BluetoothSensorService {
     private int mState;
     private int newState;
 
+    private File file;
+    private FileWriter fileWriter;
+    private BufferedWriter bufferedWriter;
+
     private static BluetoothSensorService mChatService = null;
 
     // Constants that indicate the current connection state
@@ -84,6 +93,7 @@ public class BluetoothSensorService {
      */
     public BluetoothSensorService(Context context, Handler handler) {
         this._context = (ReSightMainActivity) context;
+        sensorServiceContext = context;
 
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
@@ -483,6 +493,10 @@ public class BluetoothSensorService {
             int availableBytes;
             byte[] buffer = new byte[26];
 
+            file = new File(sensorServiceContext.getFilesDir(), "sensors.txt");
+            fileWriter = null;
+            bufferedWriter = null;
+
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
@@ -696,6 +710,32 @@ public class BluetoothSensorService {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
+    }
+
+
+    private void saveSensorDataTextFile(int[] sensors) throws IOException {
+
+        try {
+            fileWriter = new FileWriter(file);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            for(int i =0 ; i < sensorNum ; i++) {
+                bufferedWriter.write(sensors[i]);
+                bufferedWriter.write("\t");
+            }
+            bufferedWriter.write("\n");
+            bufferedWriter.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+            if(fileWriter != null) {
+                fileWriter.close();
+            }
+        }
+
     }
 
 }
