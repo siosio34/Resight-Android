@@ -11,8 +11,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.view.Activity.ReSightMainActivity;
 import com.dragon4.owo.resight_android.model.SensorData;
+import com.dragon4.owo.resight_android.view.Activity.ReSightMainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,6 +62,8 @@ public class BluetoothSensorService {
     private AcceptThread mSensorSecureAcceptThread;
     private ConnectThread mSensorConnectThread;
     private ConnectedThread mSensorConnectedThread;
+
+    public static boolean isSaveMode = false;
 
     private int mState;
     private int newState;
@@ -475,6 +477,8 @@ public class BluetoothSensorService {
             mState = STATE_CONNECTED;
         }
 
+        int sum = 0;
+
         public void run() {
             Log.i(TAG, "BEGIN mSensorConnectedThread");
 
@@ -490,58 +494,74 @@ public class BluetoothSensorService {
                     if (availableBytes > 26) {
                         bytes = mmInStream.read(buffer);
                         mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                        Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
-                        Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
+
+                        String temp = String.valueOf(buffer[0]);
 
                         if (buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && buffer[25] == (byte) 0xFE) {
-                            //   if (!firstLoadSensor) {
-                            //      // registForcedSensorWithSumTimer();
-                            //       for (int i = 0; i < 6; i++) {
-                            //           newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-                            //          // newSensorDatasSum[i] += sensorsData[i];
-                            //       }
-                            //       firstLoadSensor = true;
-                            //   } else {
 
-                            if(!firstLoadSensor) {
+                            for (int i = 0; i < 6; i++) {
+                                newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+                            }
+                            System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+
+                            if(isSaveMode) {
+                                // 저장해야댐.!
+                                newPacketNum++;
+
                                 for (int i = 0; i < 6; i++) {
-                                    newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
-                                    oldSensorDatasSum[i] += newSensorsData[i];
+                                    sum += sensorsData[i]; // 새로온 데이터다..
                                 }
-                            } else {
-                                for (int i = 0; i < 6; i++) {
-                                    newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
-                                    newSensorDatasSum[i] += newSensorsData[i];
+                                Log.d("Sensors Data",sensorsData[0] + "\t" + sensorsData[1] + "\t" + sensorsData[2] + "\t" + sensorsData[3] + "\t" + sensorsData[4] + "\t" + sensorsData[5] + "\t" + sum);
+
+                                if(newPacketNum == 30) {
+                                    isSaveMode = false;
+                                    newPacketNum = 0;
+                                    sum = 0;
                                 }
                             }
 
-                            newPacketNum++;
+                            //newPacketNum++;
 
-                            if (newPacketNum == 10) {
-                                // TODO: 2017-05-15 이전 10초거랑 후 10초거랑 비교하는 알고리즘이 들어가야된다,
-                             //  // oldPacketNum = newPacketNum;
-                                newPacketNum = 0;
-                                for (int i = 0; i < 6; i++) {
-                                    diffOldAndNewSensorSum[i] = newSensorDatasSum[i] - oldSensorDatasSum[i];
-                                    Log.d(i + "번째 센서값의 차이 : ", newSensorDatasSum[i] + "-" + oldSensorDatasSum[i] + " = " + diffOldAndNewSensorSum[i]);
-                                }
-                                System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
-                                System.arraycopy(zeroArray, 0, newSensorDatasSum, 0, 6);
-                                firstLoadSensor = true;
-                            }
+                                //saveSensorDataList();
+                                // 저장 모드 일ㄷ
+
+
+                        //    if(!firstLoadSensor) {
+                        //        for (int i = 0; i < 6; i++) {
+                        //            newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+                        //            oldSensorDatasSum[i] += newSensorsData[i];
+                        //        }
+                        //    } else {
+                        //        for (int i = 0; i < 6; i++) {
+                        //            newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+                        //            newSensorDatasSum[i] += newSensorsData[i];
+                        //        }
+                        //    }
+//
+                        //    newPacketNum++;
+//
+                        //    if (newPacketNum == 10) {
+                        //     //  // oldPacketNum = newPacketNum;
+                        //        newPacketNum = 0;
+                        //        for (int i = 0; i < 6; i++) {
+                        //            diffOldAndNewSensorSum[i] = newSensorDatasSum[i] - oldSensorDatasSum[i];
+                        //            Log.d(i + "번째 센서값의 차이 : ", newSensorDatasSum[i] + "-" + oldSensorDatasSum[i] + " = " + diffOldAndNewSensorSum[i]);
+                        //        }
+                        //        System.arraycopy(newSensorDatasSum, 0, oldSensorDatasSum, 0, 6);
+                        //        System.arraycopy(zeroArray, 0, newSensorDatasSum, 0, 6);
+                        //        firstLoadSensor = true;
+                        //    }
+//
+                        //    System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
 
 
                             // TODO: 2017-05-15 10개씩 쌓는거
                             // TODO: 2017-05-15 차이량을 쌓는거
                             //sensorsData가 기존에있는 데이터.
                             //  isForcedSensor(sensorsData, newSensorsData);
-                           // System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+                           //
 
 
-                            // }
-                            // TODO: 2017-05-06 이거 값 처리해야된다...
-                            //   Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
-                            //           + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
                         }
 
                     } else {
@@ -588,6 +608,54 @@ public class BluetoothSensorService {
             // 1초마다 돌린다.
             timer.schedule(sensorTimerTask, 0, 1000);
         }
+
+        // TODO: 2017. 5. 24. 특정 버튼을 누르면 시작.
+        private void saveSensorDataList() {
+            long windowTime = 3000;
+
+            Timer myTimer = new Timer();
+            myTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                }
+            },windowTime);
+
+            // TODO: 2017. 5. 24. 센서를 모으고 이를 텍스트 파일에 저장한다
+            // TODO: 2017. 5. 24. 텍스트 파일 저장형식
+            // 동작형태 센서1 센서2 센서3 센서4 센서5 센서6 SUM
+            Log.d("saveSensorDataList","saveSensorDataList 수집완료 3초간 휴식");;
+            SystemClock.sleep(windowTime);
+            Log.d("saveSensorDataList","saveSensorDataList 수집가능");;
+
+        }
+
+      //  private void saveDataToTextFile() {
+      //
+      //      long windowTime = 3000;
+//
+      //      Timer myTimer = new Timer();
+      //      myTimer.schedule(new TimerTask() {
+      //          @Override
+      //          public void run() {
+      //
+      //              //newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+      //          }
+      //      }, windowTime);
+      //
+      //      isSaveMode = false;
+      //
+//
+      //      // TODO: 2017. 5. 24. 센서를 모으고 이를 텍스트 파일에 저장한다
+      //      // TODO: 2017. 5. 24. 텍스트 파일 저장형식
+      //      // 동작형태 센서1 센서2 센서3 센서4 센서5 센서6 SUM
+      //      Log.d("saveSensorDataList","saveSensorDataList 수집완료 3초간 휴식");
+      //      isSaveMode = false;
+      //      SystemClock.sleep(windowTime);
+      //      Log.d("saveSensorDataList","saveSensorDataList 수집가능");
+//
+      //      System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+      //  }
 
 
         //  try {
@@ -660,14 +728,12 @@ public class BluetoothSensorService {
             //         .sendToTarget();
         }
 
+
         private int bytoHexToInteger(byte hexNum) {
-            StringBuilder sb = new StringBuilder(2);
-            String hexDecimalNum;
+            // http://javaslave.tistory.com/59
+            String hexString = Integer.toString(((hexNum & 0Xff) + 0x100), 16).substring(1);
+            return Integer.parseInt(hexString, 16);
 
-            hexDecimalNum = "0" + Integer.toHexString(0xff & hexNum);
-            sb.append(hexDecimalNum.substring(hexDecimalNum.length() - 2));
-
-            return Integer.parseInt(sb.toString(), 16);
         }
 
         /**
@@ -697,5 +763,6 @@ public class BluetoothSensorService {
             }
         }
     }
+
 
 }

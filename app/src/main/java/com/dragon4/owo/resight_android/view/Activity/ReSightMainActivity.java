@@ -146,6 +146,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             case 0:
                 currentSelectedFragment = monitoringFragment;
                 bluetoothTest();
+                BluetoothSensorService.isSaveMode = true;
                 break;
             case 1:
                 currentSelectedFragment = customizeFragment;
@@ -158,10 +159,9 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     }
 
     private void bluetoothTest() {
-        Log.d("ddddd","여기는들어오나??");
+
         if(mHandService != null && mSensorService != null) {
 
-            Log.d("ddddd","여기는??");
             //  String temp = "a";
             //  int randNum = (int)(Math.random() * 100);
             //  String b = randNum > 50 ? "a" : "b";
@@ -172,6 +172,8 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             sendMessageToSensor(buff2);
         }
     }
+
+
 
     @Override
     public void onTabUnselected(int position) {
@@ -436,18 +438,20 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
        ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
                .contains("sensorType","sensor").findFirst();
 
-       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
-       mSensorService.connect(device,true);
+       if(realmResults != null) {
+           BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+           mSensorService.connect(device, true);
+       }
 
    }
    private void connectHandDevice() {
        ResightBluetoothDevice realmResults = mRealm.where(ResightBluetoothDevice.class)
                .contains("sensorType","hand").findFirst();
 
-       BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
-       Log.d("dd", device.getName());
-
-       mHandService.connect(device,true);
+       if(realmResults != null) {
+           BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(realmResults.getDeviceAddress());
+           mHandService.connect(device, true);
+       }
 
    }
 }
