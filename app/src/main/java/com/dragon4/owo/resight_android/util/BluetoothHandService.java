@@ -555,8 +555,6 @@ public class BluetoothHandService {
 
     private void handControl() {
 
-
-
     }
 
 }

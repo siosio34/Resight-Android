@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String TAG = "MainActivity";
 
     private static final int RC_LOCATION_REQUEST_PERM = 8001;
+    private static final int RC_EXTERNAL_PERM = 8002;
     private boolean bluetoothSetFlag = true;
 
     @Override
@@ -51,15 +52,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @AfterPermissionGranted(RC_LOCATION_REQUEST_PERM)
     public void requestBloothPermission() {
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms) ) {
             // 블루투스는 노말권한 .
             // 하지만 https://developer.android.com/about/versions/marshmallow/android-6.0-changes.html#behavior-notifications
             // 블루투스와 Wi-Fi 스캔으로 근처 외부 기기의 하드웨어 식별자에 액세스하려면 앱에 ACCESS_FINE_LOCATION 또는 ACCESS_COARSE_LOCATION 권한이 있어야한다.
+            Log.d("이거","들어오나");
             moveSearchBloothActivity();
 
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_REQUEST_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+                    RC_LOCATION_REQUEST_PERM, perms);
         }
     }
 

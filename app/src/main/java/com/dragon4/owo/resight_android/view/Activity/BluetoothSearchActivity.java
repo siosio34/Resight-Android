@@ -175,7 +175,6 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_DEVICE_ADDRESS, recentParingBloothDevice.getAddress());
                 intent.putExtra(EXTRA_DEVICE_NAME,recentParingBloothDevice.getName());
-
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
