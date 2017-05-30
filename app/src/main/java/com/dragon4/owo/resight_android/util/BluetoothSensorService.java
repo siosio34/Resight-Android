@@ -77,7 +77,7 @@ public class BluetoothSensorService {
     private int mState;
     private int newState;
 
-    private File tempFile;
+    private File sensorFile;
     private FileWriter fileWriter;
     private BufferedWriter bufferedWriter;
 
@@ -503,9 +503,6 @@ public class BluetoothSensorService {
 
             // assetManager = sensorServiceContext.getResources().getAssets();
 
-            tempFile = new File(sensorServiceContext.getFilesDir(), "sensors.txt");
-
-            Log.d("file txt 경로", sensorServiceContext.getFilesDir().getAbsolutePath());
 
             fileWriter = null;
             bufferedWriter = null;
@@ -529,22 +526,18 @@ public class BluetoothSensorService {
 
                             if(isSaveMode) {
                                 // 저장해야댐.!
+                                if(newPacketNum == 0) {
+                                    sensorfsBufferOpen();
+                                   // if(!checkExternalStorage())
+                                   //     return;
+                                }
                                 newPacketNum++;
-                                saveSensorDataWindosTextFile(newSensorsData);
-
-                               // saveSensorDataAndroidTextFile(newSensorsData);
-
-                               // for (int i = 0; i < 6; i++) {
-                               //    // sum += sensorsData[i]; // 새로온 데이터다..
-                               // }
-                                //
+                                saveSensorDataInExternalStorage(newSensorsData);
 
                                 if(newPacketNum == 30) {
                                     isSaveMode = false;
                                     newPacketNum = 0;
-                                    //sensorsfileClose();
-                                    //sum = 0;
-
+                                    sensorsBufferClose();
                                 }
                             }
 
@@ -658,81 +651,6 @@ public class BluetoothSensorService {
 
         }
 
-      //  private void saveDataToTextFile() {
-      //
-      //      long windowTime = 3000;
-//
-      //      Timer myTimer = new Timer();
-      //      myTimer.schedule(new TimerTask() {
-      //          @Override
-      //          public void run() {
-      //
-      //              //newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
-      //          }
-      //      }, windowTime);
-      //
-      //      isSaveMode = false;
-      //
-//
-      //      // TODO: 2017. 5. 24. 센서를 모으고 이를 텍스트 파일에 저장한다
-      //      // TODO: 2017. 5. 24. 텍스트 파일 저장형식
-      //      // 동작형태 센서1 센서2 센서3 센서4 센서5 센서6 SUM
-      //      Log.d("saveSensorDataList","saveSensorDataList 수집완료 3초간 휴식");
-      //      isSaveMode = false;
-      //      SystemClock.sleep(windowTime);
-      //      Log.d("saveSensorDataList","saveSensorDataList 수집가능");
-//
-      //      System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-      //  }
-
-
-        //  try {
-        //      sleep(50);
-        //  } catch (InterruptedException e) {
-        //      e.printStackTrace();
-        //  }
-        // Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
-        // byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
-        // Log.d("sensor Data1",String.valueOf(buffer[0]));
-        // Log.d("sensor Data2",String.valueOf(buffer[1]));
-        // Log.d("sensor Data3",String.valueOf(buffer[24]));
-        // Log.d("sensor Data4",String.valueOf(buffer[25]));
-        // Log.d("0xFE",String.valueOf(sensorsData[0]));
-        // Log.d("0xFF",String.valueOf(sensorsData[1]));
-        // sensorsData[0] = (byte) 0xFE;
-        // sensorsData[1] = (byte) 0xFF;
-
-        // Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-        // Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-        // Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
-        //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
-        ////  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
-        // byte id;
-        // if (((byte) buffer[0] == (byte) 0xFF && (byte) buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && (byte) buffer[25] == (byte) 0xFE)) {
-
-        //     // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
-        //      //   Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
-        //      //   Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
-        //      //   Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
-
-        //     if (!firstLoadSensor) {
-        //         for (int i = 0; i < 6; i++) {
-        //             sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-        //         }
-        //         firstLoadSensor = true;
-        //         //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-        //         //   isForcedSensor(sensorsData, newSensorsData);
-        //     } else {
-        //         for (int i = 0; i < 6; i++) {
-        //             newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
-        //             //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
-        //         }
-        //         isForcedSensor(sensorsData, newSensorsData);
-        //         System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
-        //     }
-        //     // TODO: 2017-05-06 이거 값 처리해야된다...
-        //     Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
-        //             + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
 
         //     String deviceID = "resight01";
         //  FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -794,30 +712,42 @@ public class BluetoothSensorService {
 
    // String fileDir = System.getProperty("user.dir") + "\\sensors.txt";
 
+    boolean checkExternalStorage() {
+        String state = Environment.getExternalStorageState();
+        // 외부메모리 상태
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // 읽기 쓰기 모두 가능
+            Log.d("test", "외부메모리 읽기 쓰기 모두 가능");
+            return true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+            //읽기전용
+            Log.d("test", "외부메모리 읽기만 가능");
 
-    private void saveSensorDataWindosTextFile(int[] sensors) throws IOException {
-
-        FileOutputStream fileOutputStream = new FileOutputStream(tempFile, true);
-        Log.d("파일경로",tempFile.getAbsolutePath());
-        Log.d("Sensors Data@@",sensors[0] + "\t" + sensors[1] + "\t" + sensors[2] + "\t" + sensors[3] + "\t" + sensors[4] + "\t" + sensors[5] );
-        for(int i =0 ; i < sensorNum ; i++) {
-            fileOutputStream.write(sensors[i]);
-            fileOutputStream.write('\t');
+            return false;
+        } else {
+            // 읽기쓰기 모두 안됨
+            Log.d("test", "외부메모리 읽기쓰기 모두 안됨 : "+ state);
+            return false;
         }
-        fileOutputStream.write('\n');
-        fileOutputStream.close();
     }
 
-    private void saveSensorDataAndroidTextFile(int[] sensors) {
+
+    private void sensorfsBufferOpen() throws IOException {
+        File externalPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        sensorFile = new File(externalPath, "sensors.txt");
+        Log.d("file txt 경로", sensorFile.getPath());
+        fileWriter = new FileWriter(sensorFile,true);
+        bufferedWriter = new BufferedWriter(fileWriter);
+
+    }
+
+    private void saveSensorDataInExternalStorage(int[] sensors) {
         try {
-            fileWriter = new FileWriter(tempFile);
-            bufferedWriter = new BufferedWriter(fileWriter);
             Log.d("Sensors Data",sensors[0] + "\t" + sensors[1] + "\t" + sensors[2] + "\t" + sensors[3] + "\t" + sensors[4] + "\t" + sensors[5] );
-            for(int i =0 ; i < sensorNum ; i++) {
-                bufferedWriter.write(sensors[i]);
-                bufferedWriter.write("\t");
+            for(int i = 0 ; i < sensorNum ; i++) {
+                bufferedWriter.write(sensors[i] + "\t");
             }
-            bufferedWriter.write("\n");
+            bufferedWriter.write("\r\n");
             bufferedWriter.flush();
 
         } catch (IOException e) {
@@ -825,7 +755,11 @@ public class BluetoothSensorService {
         }
     }
 
-    private void sensorsfileClose() throws IOException {
+    private void sensorsBufferClose() throws IOException {
+
+        bufferedWriter.write("\r\n");
+        bufferedWriter.flush();
+
         if(bufferedWriter != null) {
             bufferedWriter.close();
         }
@@ -833,6 +767,101 @@ public class BluetoothSensorService {
             fileWriter.close();
         }
     }
+
+
+
+
+   // private void saveSensorDataWindosTextFile(int[] sensors) throws IOException {
+//
+   //     FileOutputStream fileOutputStream = new FileOutputStream(tempFile, true);
+   //     Log.d("파일경로",tempFile.getAbsolutePath());
+   //     Log.d("Sensors Data@@",sensors[0] + "\t" + sensors[1] + "\t" + sensors[2] + "\t" + sensors[3] + "\t" + sensors[4] + "\t" + sensors[5] );
+   //     for(int i =0 ; i < sensorNum ; i++) {
+   //         fileOutputStream.write(sensors[i]);
+   //         fileOutputStream.write('\t');
+   //     }
+   //    // fileOutputStream.write('\r\n');
+   //     fileOutputStream.close();
+   // }
+
+
+    //  private void saveDataToTextFile() {
+    //
+    //      long windowTime = 3000;
+//
+    //      Timer myTimer = new Timer();
+    //      myTimer.schedule(new TimerTask() {
+    //          @Override
+    //          public void run() {
+    //
+    //              //newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]); // 새로온 데이터다..
+    //          }
+    //      }, windowTime);
+    //
+    //      isSaveMode = false;
+    //
+//
+    //      // TODO: 2017. 5. 24. 센서를 모으고 이를 텍스트 파일에 저장한다
+    //      // TODO: 2017. 5. 24. 텍스트 파일 저장형식
+    //      // 동작형태 센서1 센서2 센서3 센서4 센서5 센서6 SUM
+    //      Log.d("saveSensorDataList","saveSensorDataList 수집완료 3초간 휴식");
+    //      isSaveMode = false;
+    //      SystemClock.sleep(windowTime);
+    //      Log.d("saveSensorDataList","saveSensorDataList 수집가능");
+//
+    //      System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+    //  }
+
+
+    //  try {
+    //      sleep(50);
+    //  } catch (InterruptedException e) {
+    //      e.printStackTrace();
+    //  }
+    // Log.d("sensor로부터 데이터를 읽어옴.",String.valueOf(bytes));
+    // byte[] buff = {(byte)0xFF, (byte)0xFF, (byte)0x02, (byte)0x11, (byte)0xFE, (byte)0xFE
+    // Log.d("sensor Data1",String.valueOf(buffer[0]));
+    // Log.d("sensor Data2",String.valueOf(buffer[1]));
+    // Log.d("sensor Data3",String.valueOf(buffer[24]));
+    // Log.d("sensor Data4",String.valueOf(buffer[25]));
+    // Log.d("0xFE",String.valueOf(sensorsData[0]));
+    // Log.d("0xFF",String.valueOf(sensorsData[1]));
+    // sensorsData[0] = (byte) 0xFE;
+    // sensorsData[1] = (byte) 0xFF;
+
+    // Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+    // Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+    // Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+    //  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[0]) + " " + bytoHexToInteger(buffer[1]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4])));
+    ////  Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24]) + " " + bytoHexToInteger(buffer[25])));
+    // byte id;
+    // if (((byte) buffer[0] == (byte) 0xFF && (byte) buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && (byte) buffer[25] == (byte) 0xFE)) {
+
+    //     // TODO: 2017-05-06 여기서 나온 센서 데이터 값으로 서버에서 학습시킬지 안드내 모델에서 학습시킬지 정의를 해야됨.
+    //      //   Log.d("센서 패킷 버퍼 테스트", String.valueOf(bytoHexToInteger(buffer[2]) + " " + bytoHexToInteger(buffer[3]) + " " + bytoHexToInteger(buffer[4]) + " " + bytoHexToInteger(buffer[16])));
+    //      //   Log.d("센서 패킷 버퍼 테스트2", String.valueOf(bytoHexToInteger(buffer[18]) + " " + bytoHexToInteger(buffer[20]) + " " + bytoHexToInteger(buffer[22]) + " " + bytoHexToInteger(buffer[24])));
+    //      //   Log.d("센서 패킷 버퍼 테스트3", String.valueOf(bytoHexToInteger(buffer[25])));
+
+    //     if (!firstLoadSensor) {
+    //         for (int i = 0; i < 6; i++) {
+    //             sensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+    //         }
+    //         firstLoadSensor = true;
+    //         //  System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+    //         //   isForcedSensor(sensorsData, newSensorsData);
+    //     } else {
+    //         for (int i = 0; i < 6; i++) {
+    //             newSensorsData[i] = bytoHexToInteger(buffer[5 + 2 * i]);
+    //             //sensorsData[i] = bytoHexToInteger(buffer[5 + 2*i]); // 센서 데이터 다시 바꾸기
+    //         }
+    //         isForcedSensor(sensorsData, newSensorsData);
+    //         System.arraycopy(newSensorsData, 0, sensorsData, 0, 6);
+    //     }
+    //     // TODO: 2017-05-06 이거 값 처리해야된다...
+    //     Log.d("센서 데이터 리스트", String.valueOf(sensorsData[0] + " " + sensorsData[1] + " " + sensorsData[2] + " "
+    //             + sensorsData[3] + " " + sensorsData[4] + " " + sensorsData[5]));
+
+
 
 
 }
