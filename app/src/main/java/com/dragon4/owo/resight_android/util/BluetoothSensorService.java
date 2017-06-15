@@ -13,20 +13,27 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.dragon4.owo.resight_android.model.SensorData;
+import com.dragon4.owo.resight_android.model.MuscleSensorData;
+import com.dragon4.owo.resight_android.model.Muscledata;
+import com.dragon4.owo.resight_android.network.SensorClient;
+import com.dragon4.owo.resight_android.network.ServiceGenerator;
 import com.dragon4.owo.resight_android.view.Activity.ReSightMainActivity;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -89,7 +96,6 @@ public class BluetoothSensorService {
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    private SensorData sensorData;
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -506,16 +512,17 @@ public class BluetoothSensorService {
 
             fileWriter = null;
             bufferedWriter = null;
+            List<Muscledata> sensorsArrayList = new ArrayList<>();
 
             // Keep listening to the InputStream while connected
+
             while (mState == STATE_CONNECTED) {
                 try {
                     availableBytes = mmInStream.available();
                     if (availableBytes > 26) {
+
                         bytes = mmInStream.read(buffer);
                         mHandler.obtainMessage(BluetoothConstants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-
-                        String temp = String.valueOf(buffer[0]);
 
                         if (buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xFF && buffer[3] == (byte) 0x11 && buffer[24] == (byte) 0xFE && buffer[25] == (byte) 0xFE) {
 
@@ -526,18 +533,27 @@ public class BluetoothSensorService {
 
                             if(isSaveMode) {
                                 // 저장해야댐.!
-                                if(newPacketNum == 0) {
-                                    sensorfsBufferOpen();
+                               // if(newPacketNum == 0) {
+                                  //  sensorfsBufferOpen();
                                    // if(!checkExternalStorage())
                                    //     return;
-                                }
-                                newPacketNum++;
-                                saveSensorDataInExternalStorage(newSensorsData);
+                              //  }
 
-                                if(newPacketNum == 30) {
+                                newPacketNum++;
+                                sensorsArrayList.add(new Muscledata(newSensorsData[0],newSensorsData[1],newSensorsData[2],newSensorsData[3],newSensorsData[4],newSensorsData[5]));
+
+                                // 안드로이드 외장 텍스트 파일에 저장하는 함수.
+                                //saveSensorDataInExternalStorage(newSensorsData);
+
+                                if(newPacketNum == 60) {
                                     isSaveMode = false;
                                     newPacketNum = 0;
-                                    sensorsBufferClose();
+
+                                    saveSensorDataoToServer(new MuscleSensorData("resight0","0",sensorsArrayList));
+                                    sensorsArrayList.clear();
+
+
+                                   // sensorsBufferClose();
                                 }
                             }
 
@@ -674,7 +690,6 @@ public class BluetoothSensorService {
             //         .sendToTarget();
         }
 
-
         private int bytoHexToInteger(byte hexNum) {
             // http://javaslave.tistory.com/59
             String hexString = Integer.toString(((hexNum & 0Xff) + 0x100), 16).substring(1);
@@ -753,6 +768,25 @@ public class BluetoothSensorService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void saveSensorDataoToServer(MuscleSensorData muscleSensorData) {
+        SensorClient client = ServiceGenerator.createService(SensorClient.class);
+        client.uploadSensorData(muscleSensorData).enqueue(new Callback<MuscleSensorData>() {
+            @Override
+            public void onResponse(Call<MuscleSensorData> call, Response<MuscleSensorData> response) {
+                Log.d("onSucessCall",call.toString());
+                Log.d("onResponse",response.toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<MuscleSensorData> call, Throwable t) {
+                Log.d("onFailCall",call.toString());
+            }
+        });
+
     }
 
     private void sensorsBufferClose() throws IOException {

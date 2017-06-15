@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.dragon4.owo.resight_android.model.SensorData;
 import com.dragon4.owo.resight_android.R;
 import com.dragon4.owo.resight_android.util.BluetoothSensorService;
 import com.jjoe64.graphview.GraphView;
@@ -33,7 +32,6 @@ public class TestModeFragment extends Fragment {
     int randNum;
 
     private String deviceID;
-    private SensorData sensorData;
 
     private ViewGroup rootView;
 
@@ -71,8 +69,9 @@ public class TestModeFragment extends Fragment {
             graphViewArrays[i].getViewport().setMinX(0);
             graphViewArrays[i].getViewport().setMaxX(40);
             graphViewArrays[i].getViewport().setXAxisBoundsManual(true);
-            //graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
-            //graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
+
+            graphViewArrays[i].getGridLabelRenderer().setHorizontalLabelsVisible(false);
+            graphViewArrays[i].getGridLabelRenderer().setVerticalLabelsVisible(false);
 
             graphSeriesArrays[i] = new LineGraphSeries<>();
             graphViewArrays[i].addSeries(graphSeriesArrays[i]);

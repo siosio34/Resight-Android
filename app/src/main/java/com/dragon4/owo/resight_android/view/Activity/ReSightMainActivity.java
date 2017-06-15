@@ -161,6 +161,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
     private void bluetoothTest() {
 
         if(mHandService != null && mSensorService != null) {
+            Log.d("여기에들어오나!","들어와라");
 
             //  String temp = "a";
             //  int randNum = (int)(Math.random() * 100);
@@ -168,6 +169,7 @@ public class ReSightMainActivity extends AppCompatActivity implements BottomNavi
             //  sendMessage(b);
             //  byte[] buff = {(byte) 0xFF, (byte) 0xFF, (byte) 0x02, (byte) 0x11, (byte) 0xFE, (byte) 0xFE};
             //  sendMessage2(buff);
+
             byte[] buff2 = {(byte) 0x11};
             sendMessageToSensor(buff2);
         }
